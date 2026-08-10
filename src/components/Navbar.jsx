@@ -37,11 +37,9 @@ const Navbar = () => {
         {/* Brand Logo */}
         <Link to="/" className="flex flex-col items-start group">
           <span className="font-serif text-2xl lg:text-3xl text-brand-cream tracking-[0.15em] font-light group-hover:text-brand-gold transition-colors duration-300">
-            TOIYAB
+            ABU TOIAB
           </span>
-          <span className="text-[9px] uppercase tracking-[0.4em] text-brand-gold/80 font-light -mt-1 group-hover:text-brand-cream transition-colors duration-300">
-            Fine Art Weddings
-          </span>
+          
         </Link>
 
         {/* Desktop Navigation */}

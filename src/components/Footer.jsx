@@ -19,10 +19,10 @@ const Footer = () => {
           <div className="md:col-span-5 flex flex-col items-start">
             <Link to="/" className="flex flex-col items-start group mb-4">
               <span className="font-serif text-3xl text-brand-cream tracking-[0.2em] font-light group-hover:text-brand-gold transition-colors">
-                TOIYAB
+                ABU TOIAB
               </span>
               <span className="text-[10px] uppercase tracking-[0.4em] text-brand-gold font-light -mt-1">
-                Fine Art Weddings & Cinematography
+                Photographer & Cinematographer
               </span>
             </Link>
             <p className="text-xs font-sans text-brand-cream/60 font-light leading-relaxed max-w-sm">
@@ -80,7 +80,7 @@ const Footer = () => {
             </div>
             <p className="text-xs text-brand-cream/60 flex items-center gap-2">
               <Mail className="w-3.5 h-3.5 text-brand-gold" />
-              <span>inquire@toiyabweddings.com</span>
+              <span>inquire@abutoiab.com</span>
             </p>
           </div>
 
@@ -88,7 +88,7 @@ const Footer = () => {
 
         {/* Bottom Bar */}
         <div className="pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-brand-cream/50 font-light">
-          <p>© {new Date().getFullYear()} TOIYAB Fine Art Weddings. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} ABU TOIAB Fine Art Weddings. All rights reserved.</p>
           <div className="flex items-center gap-6">
             <Link to="/admin" className="hover:text-brand-gold transition-colors">Admin Portal</Link>
             <button

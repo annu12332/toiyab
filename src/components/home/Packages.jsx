@@ -25,7 +25,7 @@ const DEFAULT_PACKAGES = [
     subtitle: 'Our most sought-after multi-day complete visual coverage.',
     features: [
       'Full Day Multi-Ceremony Coverage (2 Days)',
-      'Lead Photographer (Toiyab) + Associate Photographer',
+      'Lead Photographer (Abu Toiab) + Associate Photographer',
       'Cinematic Trailer Video (3-5 mins) + Highlight Reel',
       '300+ Artistically Retouched Master Prints',
       'Fine Art Hardcover Heirloom Album (12x18")',
@@ -40,7 +40,7 @@ const DEFAULT_PACKAGES = [
     subtitle: 'The ultimate luxury bespoke experience for grand weddings.',
     features: [
       'Unlimited Hours Coverage across 3 Days',
-      'Full Team: Toiyab + 2 Senior Photographers + 2 Cinematographers',
+      'Full Team: Abu Toiab + 2 Senior Photographers + 2 Cinematographers',
       'Full Length Feature Film (15-20 mins) + 4K Teaser Reel',
       '2 Custom Handcrafted Leather Heirloom Albums',
       'Parents Companion Albums (Set of 2)',

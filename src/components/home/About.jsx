@@ -90,7 +90,7 @@ const About = ({ settings }) => {
               />
               <img
                 src={portraitUrl}
-                alt="Toiyab Portrait"
+                alt={`${settings?.photographerName || 'Abu Toiab'} Portrait`}
                 className="w-full h-full object-cover grayscale contrast-105 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-1000 ease-out"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-brand-black/80 via-transparent to-transparent opacity-60" />
@@ -110,7 +110,7 @@ const About = ({ settings }) => {
               transition={{ duration: 0.8, delay: 1 }}
               className="absolute -bottom-6 -right-4 sm:right-6 bg-brand-dark border border-brand-gold/30 p-4 shadow-2xl backdrop-blur-md"
             >
-              <span className="font-serif italic text-xl text-brand-gold block">Toiyab</span>
+              <span className="font-serif italic text-xl text-brand-gold block">{settings?.photographerName || "Abu Toiab"}</span>
               <span className="text-[10px] uppercase tracking-widest text-brand-cream/60 block">Lead Artist</span>
             </motion.div>
           </motion.div>

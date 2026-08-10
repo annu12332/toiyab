@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Sliders, Image as ImageIcon, Video as VideoIcon, Inbox, LogOut, Plus, Trash2, CheckCircle, Clock, Sparkles, Briefcase, Building2 } from 'lucide-react';
+import { Sliders, Image as ImageIcon, Video as VideoIcon, Inbox, LogOut, Plus, Trash2, CheckCircle, Clock, Sparkles, Briefcase, Building2, Crown, Edit, X } from 'lucide-react';
 import getApiUrl from '../config/api';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const [adminInfo, setAdminInfo] = useState(null);
-  const [activeTab, setActiveTab] = useState('settings'); // 'settings', 'experience', 'gallery', 'inquiries'
+  const [activeTab, setActiveTab] = useState('settings'); // 'settings', 'packages', 'experience', 'gallery', 'inquiries'
 
   // Settings State
   const [settingsForm, setSettingsForm] = useState({
@@ -41,11 +41,23 @@ const AdminDashboard = () => {
   const [category, setCategory] = useState('Weddings');
   const [mediaMsg, setMediaMsg] = useState('');
 
+  // Package Form State
+  const [pkgForm, setPkgForm] = useState({
+    name: '',
+    price: '',
+    subtitle: '',
+    featuresText: '',
+    isPopular: false
+  });
+  const [editingPkgId, setEditingPkgId] = useState(null);
+  const [pkgMsg, setPkgMsg] = useState('');
+
   // Data Collections State
   const [experiences, setExperiences] = useState([]);
   const [images, setImages] = useState([]);
   const [videos, setVideos] = useState([]);
   const [inquiries, setInquiries] = useState([]);
+  const [packages, setPackages] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -71,7 +83,7 @@ const AdminDashboard = () => {
           heroVideoUrl: setObj.heroVideoUrl || '',
           heroImageUrl: setObj.heroImageUrl || '',
           profileImageUrl: setObj.profileImageUrl || '',
-          photographerName: setObj.photographerName || 'Toiyab',
+          photographerName: setObj.photographerName || 'Abu Toiab',
           aboutText: setObj.aboutText || '',
           aboutPhotoUrl: setObj.aboutPhotoUrl || '',
           yearsExperience: setObj.yearsExperience || 8,
@@ -107,6 +119,13 @@ const AdminDashboard = () => {
       if (inqRes.ok) {
         const inqData = await inqRes.json();
         setInquiries(inqData);
+      }
+
+      // Packages
+      const pkgRes = await fetch(getApiUrl('/api/portfolio/packages'));
+      if (pkgRes.ok) {
+        const pkgData = await pkgRes.json();
+        setPackages(pkgData);
       }
     } catch (err) {
       console.log('Error fetching dashboard data');
@@ -279,6 +298,97 @@ const AdminDashboard = () => {
     setInquiries(inquiries.filter(inq => inq._id !== id));
   };
 
+  const handleSavePackage = async (e) => {
+    e.preventDefault();
+    setPkgMsg('');
+
+    const featuresArray = pkgForm.featuresText
+      .split('\n')
+      .map(f => f.trim())
+      .filter(f => f.length > 0);
+
+    const payload = {
+      name: pkgForm.name,
+      price: pkgForm.price,
+      subtitle: pkgForm.subtitle,
+      features: featuresArray,
+      isPopular: pkgForm.isPopular
+    };
+
+    try {
+      const url = editingPkgId
+        ? getApiUrl(`/api/portfolio/packages/${editingPkgId}`)
+        : getApiUrl('/api/portfolio/packages');
+      const method = editingPkgId ? 'PUT' : 'POST';
+
+      const res = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${adminInfo.token}`
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (res.ok) {
+        const savedPkg = await res.json();
+        if (editingPkgId) {
+          setPackages(packages.map(p => p._id === editingPkgId ? savedPkg : p));
+          setPkgMsg('Package updated successfully!');
+        } else {
+          setPackages([...packages, savedPkg]);
+          setPkgMsg('New package added successfully!');
+        }
+        resetPkgForm();
+      } else {
+        setPkgMsg('Failed to save package.');
+      }
+    } catch (err) {
+      setPkgMsg('Saved locally in preview mode.');
+      if (editingPkgId) {
+        setPackages(packages.map(p => p._id === editingPkgId ? { ...payload, _id: editingPkgId } : p));
+      } else {
+        setPackages([...packages, { ...payload, _id: Date.now().toString() }]);
+      }
+      resetPkgForm();
+    }
+  };
+
+  const handleEditPackageClick = (pkg) => {
+    setEditingPkgId(pkg._id);
+    setPkgForm({
+      name: pkg.name || '',
+      price: pkg.price || '',
+      subtitle: pkg.subtitle || '',
+      featuresText: Array.isArray(pkg.features) ? pkg.features.join('\n') : '',
+      isPopular: !!pkg.isPopular
+    });
+    setPkgMsg('');
+  };
+
+  const resetPkgForm = () => {
+    setEditingPkgId(null);
+    setPkgForm({
+      name: '',
+      price: '',
+      subtitle: '',
+      featuresText: '',
+      isPopular: false
+    });
+  };
+
+  const handleDeletePackage = async (id) => {
+    if (!window.confirm('Delete this package?')) return;
+    try {
+      await fetch(getApiUrl(`/api/portfolio/packages/${id}`), {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${adminInfo.token}` }
+      });
+    } catch (err) {}
+    setPackages(packages.filter(p => p._id !== id));
+    if (editingPkgId === id) resetPkgForm();
+  };
+
   const handleLogout = () => {
     localStorage.removeItem('adminInfo');
     navigate('/admin');
@@ -327,6 +437,18 @@ const AdminDashboard = () => {
           >
             <Sliders className="w-4 h-4" />
             <span>Site Settings</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('packages')}
+            className={`px-5 py-2.5 text-xs uppercase tracking-widest font-light flex items-center gap-2 transition-all ${
+              activeTab === 'packages'
+                ? 'bg-brand-gold text-brand-black font-medium'
+                : 'bg-brand-dark/80 text-brand-cream/70 border border-brand-gold/20 hover:text-brand-gold'
+            }`}
+          >
+            <Crown className="w-4 h-4" />
+            <span>Manage Packages ({packages.length})</span>
           </button>
 
           <button
@@ -391,7 +513,7 @@ const AdminDashboard = () => {
                       type="text"
                       value={settingsForm.photographerName}
                       onChange={(e) => setSettingsForm({ ...settingsForm, photographerName: e.target.value })}
-                      placeholder="e.g. Toiyab"
+                      placeholder="e.g. Abu Toiab"
                       className="w-full bg-brand-black/70 border border-brand-gold/20 text-brand-cream p-3 text-sm focus:border-brand-gold focus:outline-none"
                     />
                   </div>
@@ -519,6 +641,190 @@ const AdminDashboard = () => {
                   Save Settings Changes
                 </button>
               </form>
+            </div>
+          </motion.div>
+        )}
+
+        {/* TAB: MANAGE PACKAGES */}
+        {activeTab === 'packages' && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-12 max-w-5xl">
+            {/* Add / Edit Package Form */}
+            <div className="bg-brand-dark/90 border border-brand-gold/20 p-8 shadow-2xl">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-serif text-brand-cream flex items-center gap-2 font-light">
+                  {editingPkgId ? <Edit className="w-5 h-5 text-brand-gold" /> : <Plus className="w-5 h-5 text-brand-gold" />}
+                  {editingPkgId ? 'Edit Investment Package' : 'Add New Investment Package'}
+                </h2>
+                {editingPkgId && (
+                  <button
+                    onClick={resetPkgForm}
+                    className="text-xs text-brand-cream/60 hover:text-brand-cream flex items-center gap-1 border border-brand-gold/30 px-3 py-1"
+                  >
+                    <X className="w-3.5 h-3.5" /> Cancel Edit
+                  </button>
+                )}
+              </div>
+
+              {pkgMsg && (
+                <div className="p-3 mb-6 bg-brand-gold/10 border border-brand-gold/40 text-brand-gold text-xs">
+                  {pkgMsg}
+                </div>
+              )}
+
+              <form onSubmit={handleSavePackage} className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-xs uppercase tracking-widest text-brand-cream/70 mb-2 font-light">
+                      Package Name *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={pkgForm.name}
+                      onChange={(e) => setPkgForm({ ...pkgForm, name: e.target.value })}
+                      placeholder="e.g. The Signature Experience"
+                      className="w-full bg-brand-black/70 border border-brand-gold/20 text-brand-cream p-3 text-sm focus:border-brand-gold focus:outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs uppercase tracking-widest text-brand-cream/70 mb-2 font-light">
+                      Price *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={pkgForm.price}
+                      onChange={(e) => setPkgForm({ ...pkgForm, price: e.target.value })}
+                      placeholder="e.g. ৳1,50,000"
+                      className="w-full bg-brand-black/70 border border-brand-gold/20 text-brand-cream p-3 text-sm focus:border-brand-gold focus:outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs uppercase tracking-widest text-brand-cream/70 mb-2 font-light">
+                    Subtitle / Short Description
+                  </label>
+                  <input
+                    type="text"
+                    value={pkgForm.subtitle}
+                    onChange={(e) => setPkgForm({ ...pkgForm, subtitle: e.target.value })}
+                    placeholder="e.g. Our most sought-after multi-day complete visual coverage."
+                    className="w-full bg-brand-black/70 border border-brand-gold/20 text-brand-cream p-3 text-sm focus:border-brand-gold focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs uppercase tracking-widest text-brand-cream/70 mb-2 font-light">
+                    Package Features (One feature per line) *
+                  </label>
+                  <textarea
+                    rows="5"
+                    required
+                    value={pkgForm.featuresText}
+                    onChange={(e) => setPkgForm({ ...pkgForm, featuresText: e.target.value })}
+                    placeholder="Full Day Multi-Ceremony Coverage&#10;Lead Photographer + Associate Photographer&#10;Cinematic Trailer Video + Highlight Reel&#10;Fine Art Hardcover Heirloom Album"
+                    className="w-full bg-brand-black/70 border border-brand-gold/20 text-brand-cream p-3 text-sm focus:border-brand-gold focus:outline-none font-mono text-xs leading-relaxed"
+                  />
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <input
+                    type="checkbox"
+                    id="isPopular"
+                    checked={pkgForm.isPopular}
+                    onChange={(e) => setPkgForm({ ...pkgForm, isPopular: e.target.checked })}
+                    className="w-4 h-4 accent-brand-gold cursor-pointer"
+                  />
+                  <label htmlFor="isPopular" className="text-xs uppercase tracking-widest text-brand-cream/80 cursor-pointer font-light">
+                    Mark as Most Requested / Popular Badge
+                  </label>
+                </div>
+
+                <div className="flex gap-4">
+                  <button type="submit" className="btn-solid-gold flex-1 !py-3.5">
+                    {editingPkgId ? 'Update Investment Package' : 'Save & Publish Package'}
+                  </button>
+                  {editingPkgId && (
+                    <button
+                      type="button"
+                      onClick={resetPkgForm}
+                      className="btn-gold !py-3.5 !px-6"
+                    >
+                      Cancel
+                    </button>
+                  )}
+                </div>
+              </form>
+            </div>
+
+            {/* List of Existing Packages */}
+            <div>
+              <h3 className="text-xl font-serif text-brand-cream mb-6 font-light flex items-center gap-2">
+                <Crown className="w-5 h-5 text-brand-gold" />
+                Current Investment Packages ({packages.length})
+              </h3>
+
+              {packages.length === 0 ? (
+                <div className="p-8 text-center bg-brand-dark/60 border border-brand-gold/15 text-brand-cream/60">
+                  No custom packages added yet.
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {packages.map((pkg, idx) => (
+                    <div
+                      key={pkg._id || idx}
+                      className={`bg-brand-dark border p-6 relative flex flex-col justify-between ${
+                        pkg.isPopular ? 'border-brand-gold shadow-lg' : 'border-brand-gold/20'
+                      }`}
+                    >
+                      {pkg.isPopular && (
+                        <span className="absolute -top-3 left-4 bg-brand-gold text-brand-black text-[9px] uppercase tracking-widest px-2.5 py-0.5 font-medium">
+                          Most Requested
+                        </span>
+                      )}
+
+                      <div>
+                        <span className="text-[10px] uppercase tracking-widest text-brand-gold block mb-1">
+                          Collection {idx + 1}
+                        </span>
+                        <h4 className="text-xl font-serif text-brand-cream font-medium mb-1">{pkg.name}</h4>
+                        <p className="text-xs text-brand-gold text-lg font-serif mb-3">{pkg.price}</p>
+                        {pkg.subtitle && (
+                          <p className="text-xs text-brand-cream/60 mb-4 italic">{pkg.subtitle}</p>
+                        )}
+
+                        {pkg.features && pkg.features.length > 0 && (
+                          <ul className="space-y-1.5 mb-6 text-xs text-brand-cream/70">
+                            {pkg.features.map((feat, fIdx) => (
+                              <li key={fIdx} className="flex items-start gap-1.5">
+                                <span className="text-brand-gold">•</span>
+                                <span className="line-clamp-2">{feat}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+
+                      <div className="pt-4 border-t border-brand-gold/15 flex items-center justify-between">
+                        <button
+                          onClick={() => handleEditPackageClick(pkg)}
+                          className="text-brand-gold hover:text-amber-300 text-xs flex items-center gap-1 font-medium"
+                        >
+                          <Edit className="w-3.5 h-3.5" /> Edit Package
+                        </button>
+                        <button
+                          onClick={() => handleDeletePackage(pkg._id)}
+                          className="text-rose-400 hover:text-rose-300 text-xs flex items-center gap-1"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" /> Delete
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </motion.div>
         )}
