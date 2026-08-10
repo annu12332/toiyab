@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    color-scheme: dark;
+  }
+  
+  body {
+    @apply bg-brand-black text-brand-cream font-sans antialiased selection:bg-brand-gold selection:text-brand-black overflow-x-hidden;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif font-light tracking-wide;
+  }
+
+  /* Custom luxury scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #0a0908;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #d4af6a;
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #e5c17c;
+  }
+}
+
+@layer components {
+  .btn-gold {
+    @apply border border-brand-gold/60 text-brand-gold px-8 py-3 text-xs tracking-[0.25em] uppercase hover:bg-brand-gold hover:text-brand-black transition-all duration-500 rounded-none inline-block font-light text-center cursor-pointer;
+  }
+  
+  .btn-solid-gold {
+    @apply bg-brand-gold text-brand-black border border-brand-gold px-8 py-3 text-xs tracking-[0.25em] uppercase hover:bg-white hover:border-white transition-all duration-500 rounded-none inline-block font-medium text-center cursor-pointer shadow-lg shadow-brand-gold/10;
+  }
+
+  .glass-card {
+    @apply bg-brand-dark/60 border border-brand-gold/15 backdrop-blur-md hover:border-brand-gold/40 transition-all duration-500;
+  }
+
+  .gold-gradient-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-brand-gold via-[#e8d5b5] to-brand-gold;
+  }
+}

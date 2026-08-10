@@ -1,0 +1,17 @@
+.footer {
+  padding: 2rem 0;
+  text-align: center;
+  border-top: 1px solid var(--border-color);
+  margin-top: auto;
+}
+
+.footer-content p {
+  color: #94a3b8;
+  font-size: 0.9rem;
+}
+
+.credit {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
