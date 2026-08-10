@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Send, Calendar, MapPin, Mail, User, CheckCircle, AlertCircle, MessageSquare } from 'lucide-react';
+import getApiUrl from '../../config/api';
 
 const Inquire = ({ selectedPackageName }) => {
   const [formData, setFormData] = useState({
@@ -31,7 +32,7 @@ const Inquire = ({ selectedPackageName }) => {
     setStatusMsg(null);
 
     try {
-      const res = await fetch('/api/portfolio/inquiries', {
+      const res = await fetch(getApiUrl('/api/portfolio/inquiries'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Lock, User, KeyRound, ShieldAlert } from 'lucide-react';
+import getApiUrl from '../config/api';
 
 const AdminLogin = () => {
   const [username, setUsername] = useState('');
@@ -17,7 +18,7 @@ const AdminLogin = () => {
     setError('');
 
     try {
-      const res = await fetch('/api/auth/login', {
+      const res = await fetch(getApiUrl('/api/auth/login'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password })

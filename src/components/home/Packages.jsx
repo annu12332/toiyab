@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Check, Crown, Award } from 'lucide-react';
+import getApiUrl from '../../config/api';
 
 const DEFAULT_PACKAGES = [
   {
@@ -55,7 +56,7 @@ const Packages = ({ onSelectPackage }) => {
   useEffect(() => {
     const fetchPackages = async () => {
       try {
-        const res = await fetch('/api/portfolio/packages');
+        const res = await fetch(getApiUrl('/api/portfolio/packages'));
         if (res.ok) {
           const data = await res.json();
           if (data && data.length > 0) {

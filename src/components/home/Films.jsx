@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Play, X, Film } from 'lucide-react';
+import getApiUrl from '../../config/api';
 
 const DEFAULT_FILMS = [
   {
@@ -36,7 +37,7 @@ const Films = () => {
   useEffect(() => {
     const fetchVideos = async () => {
       try {
-        const res = await fetch('/api/portfolio/videos');
+        const res = await fetch(getApiUrl('/api/portfolio/videos'));
         if (res.ok) {
           const data = await res.json();
           if (data && data.length > 0) {

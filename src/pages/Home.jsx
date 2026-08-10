@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import getApiUrl from '../config/api';
 import Hero from '../components/home/Hero';
 import About from '../components/home/About';
 import Experience from '../components/home/Experience';
@@ -15,7 +16,7 @@ const Home = () => {
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        const res = await fetch('/api/portfolio/settings');
+        const res = await fetch(getApiUrl('/api/portfolio/settings'));
         if (res.ok) {
           const data = await res.json();
           setSettings(data);

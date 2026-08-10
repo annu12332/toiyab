@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight, Maximize2, Sparkles } from 'lucide-react';
+import getApiUrl from '../../config/api';
 
 const DEFAULT_GALLERY = [
   {
@@ -72,7 +73,7 @@ const Gallery = () => {
   useEffect(() => {
     const fetchGallery = async () => {
       try {
-        const res = await fetch('/api/portfolio/images');
+        const res = await fetch(getApiUrl('/api/portfolio/images'));
         if (res.ok) {
           const data = await res.json();
           if (data && data.length > 0) {

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Quote, Heart } from 'lucide-react';
+import getApiUrl from '../../config/api';
 
 const DEFAULT_TESTIMONIALS = [
   {
@@ -35,7 +36,7 @@ const Testimonials = () => {
   useEffect(() => {
     const fetchTestimonials = async () => {
       try {
-        const res = await fetch('/api/portfolio/testimonials');
+        const res = await fetch(getApiUrl('/api/portfolio/testimonials'));
         if (res.ok) {
           const data = await res.json();
           if (data && data.length > 0) {

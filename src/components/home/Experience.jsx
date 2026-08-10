@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Briefcase, Calendar, Building2, Sparkles } from 'lucide-react';
+import getApiUrl from '../../config/api';
 
 const DEFAULT_EXPERIENCES = [
   {
@@ -36,7 +37,7 @@ const Experience = () => {
   useEffect(() => {
     const fetchExperiences = async () => {
       try {
-        const res = await fetch('/api/portfolio/experiences');
+        const res = await fetch(getApiUrl('/api/portfolio/experiences'));
         if (res.ok) {
           const data = await res.json();
           if (data && data.length > 0) {

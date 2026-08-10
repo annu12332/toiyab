@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Sliders, Image as ImageIcon, Video as VideoIcon, Inbox, LogOut, Plus, Trash2, CheckCircle, Clock, Sparkles, Briefcase, Building2 } from 'lucide-react';
+import getApiUrl from '../config/api';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -61,7 +62,7 @@ const AdminDashboard = () => {
     setLoading(true);
     try {
       // Settings
-      const setRes = await fetch('/api/portfolio/settings');
+      const setRes = await fetch(getApiUrl('/api/portfolio/settings'));
       if (setRes.ok) {
         const setObj = await setRes.json();
         setSettingsForm({
@@ -79,28 +80,28 @@ const AdminDashboard = () => {
       }
 
       // Experiences
-      const expRes = await fetch('/api/portfolio/experiences');
+      const expRes = await fetch(getApiUrl('/api/portfolio/experiences'));
       if (expRes.ok) {
         const expData = await expRes.json();
         setExperiences(expData);
       }
 
       // Images
-      const imgRes = await fetch('/api/portfolio/images');
+      const imgRes = await fetch(getApiUrl('/api/portfolio/images'));
       if (imgRes.ok) {
         const imgData = await imgRes.json();
         setImages(imgData);
       }
 
       // Videos
-      const vidRes = await fetch('/api/portfolio/videos');
+      const vidRes = await fetch(getApiUrl('/api/portfolio/videos'));
       if (vidRes.ok) {
         const vidData = await vidRes.json();
         setVideos(vidData);
       }
 
       // Inquiries
-      const inqRes = await fetch('/api/portfolio/inquiries', {
+      const inqRes = await fetch(getApiUrl('/api/portfolio/inquiries'), {
         headers: { Authorization: `Bearer ${JSON.parse(localStorage.getItem('adminInfo'))?.token}` }
       });
       if (inqRes.ok) {
@@ -118,7 +119,7 @@ const AdminDashboard = () => {
     e.preventDefault();
     setSettingsMsg('');
     try {
-      const res = await fetch('/api/portfolio/settings', {
+      const res = await fetch(getApiUrl('/api/portfolio/settings'), {
         method: 'PUT',
         headers: { 
           'Content-Type': 'application/json',
@@ -141,7 +142,7 @@ const AdminDashboard = () => {
     setExpMsg('');
 
     try {
-      const res = await fetch('/api/portfolio/experiences', {
+      const res = await fetch(getApiUrl('/api/portfolio/experiences'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -181,7 +182,7 @@ const AdminDashboard = () => {
   const handleDeleteExperience = async (id) => {
     if (!window.confirm('Delete this experience entry?')) return;
     try {
-      await fetch(`/api/portfolio/experiences/${id}`, {
+      await fetch(getApiUrl(`/api/portfolio/experiences/${id}`), {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${adminInfo.token}` }
       });
@@ -192,7 +193,7 @@ const AdminDashboard = () => {
   const handleAddMedia = async (e) => {
     e.preventDefault();
     setMediaMsg('');
-    const endpoint = mediaType === 'photo' ? '/api/portfolio/images' : '/api/portfolio/videos';
+    const endpoint = mediaType === 'photo' ? getApiUrl('/api/portfolio/images') : getApiUrl('/api/portfolio/videos');
     const payload = mediaType === 'photo' 
       ? { title, url, category } 
       : { title, videoUrl: url };
@@ -233,7 +234,7 @@ const AdminDashboard = () => {
   const handleDeleteImage = async (id) => {
     if (!window.confirm('Delete this image?')) return;
     try {
-      await fetch(`/api/portfolio/images/${id}`, {
+      await fetch(getApiUrl(`/api/portfolio/images/${id}`), {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${adminInfo.token}` }
       });
@@ -244,7 +245,7 @@ const AdminDashboard = () => {
   const handleDeleteVideo = async (id) => {
     if (!window.confirm('Delete this video reel?')) return;
     try {
-      await fetch(`/api/portfolio/videos/${id}`, {
+      await fetch(getApiUrl(`/api/portfolio/videos/${id}`), {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${adminInfo.token}` }
       });
@@ -254,7 +255,7 @@ const AdminDashboard = () => {
 
   const handleToggleInquiry = async (id) => {
     try {
-      await fetch(`/api/portfolio/inquiries/${id}`, {
+      await fetch(getApiUrl(`/api/portfolio/inquiries/${id}`), {
         method: 'PUT',
         headers: { Authorization: `Bearer ${adminInfo.token}` }
       });
@@ -270,7 +271,7 @@ const AdminDashboard = () => {
   const handleDeleteInquiry = async (id) => {
     if (!window.confirm('Delete this inquiry?')) return;
     try {
-      await fetch(`/api/portfolio/inquiries/${id}`, {
+      await fetch(getApiUrl(`/api/portfolio/inquiries/${id}`), {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${adminInfo.token}` }
       });
