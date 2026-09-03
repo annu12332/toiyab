@@ -104,7 +104,7 @@ const Hero = ({ settings }) => {
           <div className="inline-flex items-center gap-3 px-5 py-2 border border-brand-gold/40 rounded-full bg-brand-black/60 backdrop-blur-md shadow-lg">
             <span className="w-2 h-2 rounded-full bg-brand-gold animate-pulse" />
             <span className="text-xs sm:text-sm uppercase tracking-[0.35em] text-brand-gold font-light">
-              {photographerName} — Fine Art Photography
+              {photographerName} — Cinematographer
             </span>
           </div>
         </motion.div>
