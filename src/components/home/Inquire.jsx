@@ -1,20 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Send, Calendar, MapPin, Mail, User, CheckCircle, AlertCircle, MessageSquare } from 'lucide-react';
+import { Send, Calendar, MapPin, Mail, User, CheckCircle, AlertCircle, MessageSquare, MessageCircle, Phone } from 'lucide-react';
 import getApiUrl from '../../config/api';
 
-const Inquire = ({ selectedPackageName }) => {
+const Inquire = ({ settings, selectedPackageName }) => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     weddingDate: '',
     venue: '',
-    packageInterest: 'The Signature Experience',
+    packageInterest: 'Wedding Photography & Cinematography',
     message: ''
   });
 
   const [loading, setLoading] = useState(false);
   const [statusMsg, setStatusMsg] = useState(null);
+
+  const whatsappNumber = settings?.whatsappNumber || '+8801700000000';
+  const cleanWhatsapp = whatsappNumber.replace(/[^0-9]/g, '');
 
   useEffect(() => {
     if (selectedPackageName) {
@@ -26,56 +29,49 @@ const Inquire = ({ selectedPackageName }) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const handleWhatsAppChat = () => {
+    const textMsg = `Hello Abu Toiab, I am interested in ${formData.packageInterest || 'Wedding Photography'}.${formData.name ? ` My name is ${formData.name}.` : ''}${formData.weddingDate ? ` Event Date: ${formData.weddingDate}.` : ''} ${formData.message ? `Details: ${formData.message}` : ''}`;
+    const url = `https://wa.me/${cleanWhatsapp}?text=${encodeURIComponent(textMsg)}`;
+    window.open(url, '_blank');
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setStatusMsg(null);
 
+    // Prepare WhatsApp message
+    const textMsg = `Hello Abu Toiab, I am interested in ${formData.packageInterest || 'Wedding Photography'}.${formData.name ? ` My name is ${formData.name}.` : ''}${formData.weddingDate ? ` Event Date: ${formData.weddingDate}.` : ''}${formData.venue ? ` Venue: ${formData.venue}.` : ''} ${formData.message ? `Details: ${formData.message}` : ''}`;
+    const whatsappUrl = `https://wa.me/${cleanWhatsapp}?text=${encodeURIComponent(textMsg)}`;
+
     try {
-      const res = await fetch(getApiUrl('/api/portfolio/inquiries'), {
+      // Save inquiry to admin database as backup
+      await fetch(getApiUrl('/api/portfolio/inquiries'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
       });
-
-      if (res.ok) {
-        setStatusMsg({
-          type: 'success',
-          text: 'Thank you for reaching out! Your inquiry has been received. Toiyab will get back to you within 24 hours.'
-        });
-        setFormData({
-          name: '',
-          email: '',
-          weddingDate: '',
-          venue: '',
-          packageInterest: 'The Signature Experience',
-          message: ''
-        });
-      } else {
-        const data = await res.json();
-        setStatusMsg({
-          type: 'error',
-          text: data.message || 'Something went wrong. Please try again or contact directly via WhatsApp.'
-        });
-      }
     } catch (err) {
-      setStatusMsg({
-        type: 'success',
-        text: 'Thank you for your inquiry! We have received your booking request and will contact you shortly.'
-      });
+      console.log('Saved to WhatsApp direct link');
     } finally {
       setLoading(false);
+      // Launch WhatsApp chat window immediately
+      window.open(whatsappUrl, '_blank');
+      setStatusMsg({
+        type: 'success',
+        text: 'Opening WhatsApp Chat with your pre-filled inquiry details...'
+      });
     }
   };
 
   return (
-    <section id="inquire" className="py-24 lg:py-36 bg-brand-black text-brand-cream relative">
+    <section id="inquire" className="py-16 lg:py-24 bg-brand-black text-brand-cream relative">
       {/* Background Accent Lines */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-brand-gold/10 via-transparent to-transparent pointer-events-none" />
 
       <div className="max-w-4xl mx-auto px-6 lg:px-12 relative z-10">
         {/* Header */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-12">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -89,7 +85,7 @@ const Inquire = ({ selectedPackageName }) => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-4xl md:text-6xl font-serif font-light text-brand-cream leading-tight mb-6"
+            className="text-4xl md:text-6xl font-serif font-light text-brand-cream leading-tight mb-4"
           >
             Let's Capture Your Story
           </motion.h2>
@@ -98,10 +94,23 @@ const Inquire = ({ selectedPackageName }) => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
-            className="text-brand-cream/70 font-sans font-light text-base md:text-lg leading-relaxed max-w-xl mx-auto"
+            className="text-brand-cream/70 font-sans font-light text-base md:text-lg leading-relaxed max-w-xl mx-auto mb-6"
           >
             Dates for 2025/2026 are strictly limited to ensure uncompromising visual quality for each couple.
           </motion.p>
+
+          {/* Quick WhatsApp Bar */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3 }}
+            className="inline-flex items-center gap-3 px-5 py-2.5 bg-emerald-950/40 border border-emerald-500/30 rounded-full text-emerald-400 text-xs font-light shadow-lg hover:border-emerald-400/60 transition-colors cursor-pointer"
+            onClick={handleWhatsAppChat}
+          >
+            <MessageCircle className="w-4 h-4 fill-emerald-500/20 text-emerald-400 animate-pulse" />
+            <span>Instant Chat on WhatsApp: <strong className="font-mono font-medium text-emerald-300">{whatsappNumber}</strong></span>
+          </motion.div>
         </div>
 
         {/* Form Container */}
@@ -205,10 +214,10 @@ const Inquire = ({ selectedPackageName }) => {
               </div>
             </div>
 
-            {/* Package Selector */}
+            {/* Service Interest Selector */}
             <div>
               <label className="block text-xs uppercase tracking-[0.2em] text-brand-cream/70 font-light mb-2">
-                Collection Interest
+                Service / Coverage Interest
               </label>
               <select
                 name="packageInterest"
@@ -216,10 +225,11 @@ const Inquire = ({ selectedPackageName }) => {
                 onChange={handleChange}
                 className="w-full bg-brand-black/60 border border-brand-gold/20 focus:border-brand-gold text-brand-cream py-3 px-4 text-sm focus:outline-none transition-colors"
               >
-                <option value="The Essential Story">The Essential Story (৳85,000)</option>
-                <option value="The Signature Experience">The Signature Experience (৳1,50,000)</option>
-                <option value="The Heirloom Collection">The Heirloom Collection (৳2,40,000)</option>
-                <option value="Custom Bespoke Package">Custom Destination / Bespoke Package</option>
+                <option value="Wedding Photography & Cinematography">Full Wedding Photography & Cinematography</option>
+                <option value="Fine Art Photography">Fine Art Photography Only</option>
+                <option value="Cinematic Film Reel">Cinematic Film Reel & 4K Teaser</option>
+                <option value="Pre-Wedding & Engagement Session">Pre-Wedding & Couple Portrait Session</option>
+                <option value="Custom Destination Event">Destination Wedding / Custom Event</option>
               </select>
             </div>
 
@@ -242,21 +252,20 @@ const Inquire = ({ selectedPackageName }) => {
               </div>
             </div>
 
-            {/* Submit Button */}
-            <button
-              type="submit"
-              disabled={loading}
-              className="btn-solid-gold w-full flex items-center justify-center gap-2 !py-4 text-xs tracking-[0.3em]"
-            >
-              {loading ? (
-                'Submitting Inquiry...'
-              ) : (
-                <>
-                  <span>Send Wedding Inquiry</span>
-                  <Send className="w-4 h-4" />
-                </>
-              )}
-            </button>
+            {/* Direct WhatsApp Action Button */}
+            <div className="pt-2">
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-4 px-8 text-xs tracking-[0.25em] uppercase transition-all flex items-center justify-center gap-2.5 shadow-xl shadow-emerald-950/60 cursor-pointer rounded-none"
+              >
+                <MessageCircle className="w-5 h-5 fill-white text-emerald-600" />
+                <span>{loading ? 'Opening WhatsApp...' : 'Send Direct WhatsApp Inquiry'}</span>
+              </button>
+              <p className="text-[11px] text-brand-cream/50 font-light text-center mt-3">
+                Submitting will instantly open WhatsApp with your pre-filled inquiry details ready to send to Abu Toiab.
+              </p>
+            </div>
           </form>
         </motion.div>
       </div>

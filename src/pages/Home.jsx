@@ -5,13 +5,11 @@ import About from '../components/home/About';
 import Experience from '../components/home/Experience';
 import Gallery from '../components/home/Gallery';
 import Films from '../components/home/Films';
-import Packages from '../components/home/Packages';
 import Testimonials from '../components/home/Testimonials';
 import Inquire from '../components/home/Inquire';
 
 const Home = () => {
   const [settings, setSettings] = useState(null);
-  const [selectedPackageName, setSelectedPackageName] = useState('');
 
   useEffect(() => {
     const fetchSettings = async () => {
@@ -36,9 +34,8 @@ const Home = () => {
       <Experience />
       <Gallery />
       <Films />
-      <Packages onSelectPackage={(name) => setSelectedPackageName(name)} />
       <Testimonials />
-      <Inquire selectedPackageName={selectedPackageName} />
+      <Inquire settings={settings} />
     </div>
   );
 };

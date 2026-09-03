@@ -136,11 +136,11 @@ const Hero = ({ settings }) => {
           transition={{ duration: 1, delay: 0.9 }}
           className="flex flex-col sm:flex-row gap-5 justify-center items-center w-full sm:w-auto"
         >
-          <a href="#portfolio" className="btn-solid-gold w-full sm:w-auto text-center">
-            Explore Portfolio
+          <a href="#inquire" className="btn-solid-gold w-full sm:w-auto text-center !py-3.5 !px-8">
+            Hire Me
           </a>
-          <a href="#inquire" className="btn-gold w-full sm:w-auto text-center">
-            Inquire Now
+          <a href="#portfolio" className="btn-gold w-full sm:w-auto text-center !py-3.5 !px-8">
+            Explore Portfolio
           </a>
         </motion.div>
       </div>

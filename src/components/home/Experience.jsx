@@ -59,7 +59,7 @@ const Experience = () => {
   }, []);
 
   return (
-    <section id="experience" className="py-24 bg-brand-black text-brand-cream relative overflow-hidden">
+    <section id="experience" className="py-16 lg:py-20 bg-brand-black text-brand-cream relative overflow-hidden">
       {/* Editorial Decorative Background Elements */}
       <div className="absolute top-1/2 right-0 -translate-y-1/2 w-96 h-96 bg-brand-gold/5 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1px] h-20 bg-gradient-to-b from-transparent via-brand-gold/30 to-transparent" />

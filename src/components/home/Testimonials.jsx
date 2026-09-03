@@ -7,7 +7,7 @@ const DEFAULT_TESTIMONIALS = [
   {
     _id: 't1',
     coupleNames: 'Sarah & Farhan',
-    message: 'Toiyab didn’t just photograph our wedding; he captured the soul of our day. Looking through our album feels like reliving every single emotion all over again. He is a true master of fine art imagery.',
+    message: 'Abu Toiab didn’t just photograph our wedding; he captured the soul of our day. Looking through our album feels like reliving every single emotion all over again. He is a true master of fine art imagery.',
     weddingDate: 'December 2024',
     location: 'Radisson Blu Water Garden, Dhaka',
     photoUrl: 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=400'
@@ -15,7 +15,7 @@ const DEFAULT_TESTIMONIALS = [
   {
     _id: 't2',
     coupleNames: 'Nabila & Rahat',
-    message: 'Working with Toiyab was effortlessly natural. We aren’t usually comfortable in front of the camera, but his quiet, warm presence put us at complete ease. The results blew our families away!',
+    message: 'Working with Abu Toiab was effortlessly natural. We aren’t usually comfortable in front of the camera, but his quiet, warm presence put us at complete ease. The results blew our families away!',
     weddingDate: 'November 2024',
     location: 'Grand Sultan Tea Resort, Sylhet',
     photoUrl: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=400'
@@ -23,7 +23,7 @@ const DEFAULT_TESTIMONIALS = [
   {
     _id: 't3',
     coupleNames: 'Anika & Shahriar',
-    message: 'The cinematic film Toiyab produced for us brought tears to everyone’s eyes. The lighting, color grading, and soundtrack selection were unmatched in quality. Worth every single penny!',
+    message: 'The cinematic film Abu Toiab produced for us brought tears to everyone’s eyes. The lighting, color grading, and soundtrack selection were unmatched in quality. Worth every single penny!',
     weddingDate: 'January 2025',
     location: 'InterContinental Dhaka',
     photoUrl: 'https://images.unsplash.com/photo-1520854221256-17451cc331bf?q=80&w=400'
@@ -51,7 +51,7 @@ const Testimonials = () => {
   }, []);
 
   return (
-    <section id="testimonials" className="py-24 lg:py-36 bg-brand-dark text-brand-cream relative border-t border-brand-gold/10">
+    <section id="testimonials" className="py-16 lg:py-24 bg-brand-dark text-brand-cream relative border-t border-brand-gold/10">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">

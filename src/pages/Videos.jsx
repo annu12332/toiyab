@@ -4,7 +4,7 @@ import Films from '../components/home/Films';
 const Videos = () => {
   return (
     <div className="pt-24 bg-brand-black min-h-screen">
-      <Films />
+      <Films showViewAll={false} />
     </div>
   );
 };

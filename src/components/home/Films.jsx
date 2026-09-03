@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, X, Film } from 'lucide-react';
+import { Play, X, Film, ArrowRight } from 'lucide-react';
 import getApiUrl from '../../config/api';
 
 const DEFAULT_FILMS = [
@@ -30,7 +31,7 @@ const DEFAULT_FILMS = [
   }
 ];
 
-const Films = () => {
+const Films = ({ showViewAll = true }) => {
   const [films, setFilms] = useState(DEFAULT_FILMS);
   const [activeFilm, setActiveFilm] = useState(null);
 
@@ -51,8 +52,10 @@ const Films = () => {
     fetchVideos();
   }, []);
 
+  const displayFilms = showViewAll ? films.slice(0, 3) : films;
+
   return (
-    <section id="films" className="py-24 lg:py-36 bg-brand-dark text-brand-cream relative border-t border-brand-gold/10">
+    <section id="films" className="py-16 lg:py-24 bg-brand-dark text-brand-cream relative border-t border-brand-gold/10">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
@@ -86,7 +89,7 @@ const Films = () => {
 
         {/* Video Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {films.map((film, index) => (
+          {displayFilms.map((film, index) => (
             <motion.div
               key={film._id || index}
               initial={{ opacity: 0, y: 30 }}
@@ -141,6 +144,24 @@ const Films = () => {
             </motion.div>
           ))}
         </div>
+
+        {/* View All Button */}
+        {showViewAll && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mt-16 text-center"
+          >
+            <Link
+              to="/videos"
+              className="btn-gold inline-flex items-center gap-3 !py-3.5 !px-8 text-xs uppercase tracking-[0.25em] shadow-xl group"
+            >
+              <span>View All Cinematic Video Reels ({films.length})</span>
+              <ArrowRight className="w-4 h-4 text-brand-gold group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </motion.div>
+        )}
       </div>
 
       {/* Video Modal Player */}

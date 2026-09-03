@@ -21,7 +21,6 @@ const Navbar = () => {
     { label: 'Experience', href: isHome ? '#experience' : '/#experience' },
     { label: 'Portfolio', href: isHome ? '#portfolio' : '/#portfolio' },
     { label: 'Films', href: isHome ? '#films' : '/#films' },
-    { label: 'Investment', href: isHome ? '#investment' : '/#investment' },
     { label: 'Stories', href: isHome ? '#testimonials' : '/#testimonials' },
   ];
 
@@ -70,18 +69,12 @@ const Navbar = () => {
 
           <a 
             href={isHome ? '#inquire' : '/#inquire'} 
-            className="btn-gold !py-2 !px-6 !text-[10px]"
+            className="btn-solid-gold !py-2 !px-5 !text-[11px] font-medium transition-transform hover:scale-105"
           >
-            Inquire
+            Hire Me
           </a>
 
-          <Link
-            to="/admin"
-            className="text-brand-gold/50 hover:text-brand-gold text-[10px] uppercase tracking-widest border border-brand-gold/20 px-2.5 py-1 transition-all rounded-sm ml-2"
-            title="Admin Portal"
-          >
-            CMS
-          </Link>
+          
         </div>
 
         {/* Mobile Menu Toggle */}
@@ -143,13 +136,7 @@ const Navbar = () => {
               Inquire Now
             </a>
 
-            <Link
-              to="/admin"
-              onClick={() => setMobileMenuOpen(false)}
-              className="text-xs uppercase tracking-widest text-brand-gold/60 hover:text-brand-gold mt-2"
-            >
-              Admin Portal
-            </Link>
+
           </motion.div>
         )}
       </AnimatePresence>

@@ -33,7 +33,7 @@ const About = ({ settings }) => {
   const weddingsCount = settings?.weddingsShot || 150;
 
   return (
-    <section id="about" className="py-24 lg:py-36 bg-brand-black text-brand-cream relative overflow-hidden">
+    <section id="about" className="py-16 lg:py-24 bg-brand-black text-brand-cream relative overflow-hidden">
       {/* Decorative Subtle Hairline Background Lines */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1px] h-24 bg-gradient-to-b from-transparent via-brand-gold/30 to-transparent" />
 
@@ -194,6 +194,19 @@ const About = ({ settings }) => {
                   Destination Available
                 </span>
               </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.5 }}
+              className="mt-8"
+            >
+              <a href="#inquire" className="btn-solid-gold !py-3 !px-6 text-xs inline-flex items-center gap-2">
+                <span>Hire Abu Toiab</span>
+                <span>→</span>
+              </a>
             </motion.div>
           </motion.div>
 

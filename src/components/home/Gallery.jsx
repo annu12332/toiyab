@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronLeft, ChevronRight, Maximize2, Sparkles } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, Maximize2, Sparkles, ArrowRight } from 'lucide-react';
 import getApiUrl from '../../config/api';
 
 const DEFAULT_GALLERY = [
@@ -64,7 +65,7 @@ const DEFAULT_GALLERY = [
 
 const CATEGORIES = ['All', 'Weddings', 'Pre-Wedding', 'Ceremony', 'Portraits'];
 
-const Gallery = () => {
+const Gallery = ({ showViewAll = true }) => {
   const [items, setItems] = useState(DEFAULT_GALLERY);
   const [activeCategory, setActiveCategory] = useState('All');
   const [selectedImageIndex, setSelectedImageIndex] = useState(null);
@@ -93,6 +94,8 @@ const Gallery = () => {
     ? items
     : items.filter(item => (item.category || 'Weddings').toLowerCase() === activeCategory.toLowerCase());
 
+  const displayItems = showViewAll ? filteredItems.slice(0, 3) : filteredItems;
+
   const handleNext = (e) => {
     e.stopPropagation();
     if (selectedImageIndex !== null) {
@@ -108,7 +111,7 @@ const Gallery = () => {
   };
 
   return (
-    <section id="portfolio" className="py-24 lg:py-36 bg-brand-black text-brand-cream relative">
+    <section id="portfolio" className="py-16 lg:py-24 bg-brand-black text-brand-cream relative">
       {/* Background Subtle Gradient */}
       <div className="absolute top-1/2 left-0 w-96 h-96 bg-brand-gold/5 rounded-full blur-3xl pointer-events-none -translate-y-1/2" />
 
@@ -169,7 +172,7 @@ const Gallery = () => {
         {/* Gallery Grid */}
         <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           <AnimatePresence>
-            {filteredItems.map((item, index) => (
+            {displayItems.map((item, index) => (
               <motion.div
                 key={item._id || index}
                 layout
@@ -209,6 +212,24 @@ const Gallery = () => {
             ))}
           </AnimatePresence>
         </motion.div>
+
+        {/* View All Button */}
+        {showViewAll && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mt-16 text-center"
+          >
+            <Link
+              to="/images"
+              className="btn-gold inline-flex items-center gap-3 !py-3.5 !px-8 text-xs uppercase tracking-[0.25em] shadow-xl group"
+            >
+              <span>View All Fine Art Photos ({items.length})</span>
+              <ArrowRight className="w-4 h-4 text-brand-gold group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </motion.div>
+        )}
       </div>
 
       {/* Lightbox Modal */}

@@ -18,34 +18,34 @@
 
   /* Custom luxury scrollbar */
   ::-webkit-scrollbar {
-    width: 6px;
+    width: 5px;
   }
   ::-webkit-scrollbar-track {
-    background: #0a0908;
+    background: #080808;
   }
   ::-webkit-scrollbar-thumb {
-    background: #d4af6a;
+    background: rgba(201, 162, 75, 0.4);
     border-radius: 3px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: #e5c17c;
+    background: rgba(201, 162, 75, 0.8);
   }
 }
 
 @layer components {
   .btn-gold {
-    @apply border border-brand-gold/60 text-brand-gold px-8 py-3 text-xs tracking-[0.25em] uppercase hover:bg-brand-gold hover:text-brand-black transition-all duration-500 rounded-none inline-block font-light text-center cursor-pointer;
+    @apply border border-brand-gold/60 text-brand-gold px-7 py-2.5 text-xs tracking-[0.25em] uppercase hover:bg-brand-gold hover:text-brand-black transition-all duration-300 rounded-none inline-block font-light text-center cursor-pointer hover:shadow-[0_0_20px_rgba(201,162,75,0.4)];
   }
   
   .btn-solid-gold {
-    @apply bg-brand-gold text-brand-black border border-brand-gold px-8 py-3 text-xs tracking-[0.25em] uppercase hover:bg-white hover:border-white transition-all duration-500 rounded-none inline-block font-medium text-center cursor-pointer shadow-lg shadow-brand-gold/10;
+    @apply bg-brand-gold text-brand-black border border-brand-gold px-7 py-2.5 text-xs tracking-[0.25em] uppercase hover:bg-white hover:border-white hover:text-black transition-all duration-300 rounded-none inline-block font-medium text-center cursor-pointer shadow-lg shadow-brand-gold/15 hover:shadow-[0_0_25px_rgba(255,255,255,0.4)];
   }
 
   .glass-card {
-    @apply bg-brand-dark/60 border border-brand-gold/15 backdrop-blur-md hover:border-brand-gold/40 transition-all duration-500;
+    @apply bg-brand-dark/80 border border-brand-gold/20 backdrop-blur-md hover:border-brand-gold/50 transition-all duration-300 hover:shadow-[0_10px_30px_-10px_rgba(201,162,75,0.15)];
   }
 
   .gold-gradient-text {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-brand-gold via-[#e8d5b5] to-brand-gold;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-brand-gold via-[#f5e6ca] to-brand-gold;
   }
 }
