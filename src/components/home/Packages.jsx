@@ -28,7 +28,7 @@ const DEFAULT_PACKAGES = [
       'Lead Photographer (Abu Toiab) + Associate Photographer',
       'Cinematic Trailer Video (3-5 mins) + Highlight Reel',
       '300+ Artistically Retouched Master Prints',
-      'Fine Art Hardcover Heirloom Album (12x18")',
+      'Premium Hardcover Heirloom Album (12x18")',
       'Drone Aerial Videography (Weather permitting)'
     ],
     isPopular: true
@@ -109,7 +109,7 @@ const Packages = ({ onSelectPackage }) => {
             transition={{ delay: 0.2 }}
             className="text-brand-cream/70 font-sans font-light text-base md:text-lg leading-relaxed"
           >
-            Tailored fine art visual experiences created to preserve your legacy for generations.
+            Tailored visual experiences created to preserve your legacy for generations.
           </motion.p>
         </div>
 

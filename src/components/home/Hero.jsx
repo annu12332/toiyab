@@ -1,49 +1,118 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Camera, Sparkles, Aperture, Focus } from 'lucide-react';
 
 const DEFAULT_VIDEO = "https://assets.mixkit.co/videos/preview/mixkit-photographer-taking-photos-with-a-camera-42847-large.mp4";
 const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1920";
 
 const Hero = ({ settings }) => {
-  const videoUrl = settings?.heroVideoUrl || DEFAULT_VIDEO;
-  const imageUrl = settings?.heroImageUrl || DEFAULT_IMAGE;
+  const customVideo = settings?.heroVideoUrl && settings.heroVideoUrl.trim();
+  const customImage = settings?.heroImageUrl && settings.heroImageUrl.trim();
+  
+  // Use custom video if provided; otherwise fallback to default video if no custom image is set
+  const videoUrl = customVideo ? customVideo : (customImage ? '' : DEFAULT_VIDEO);
+  const imageUrl = customImage || DEFAULT_IMAGE;
   const profileUrl = settings?.profileImageUrl;
   const title = settings?.heroTitle || "Timeless Love,\nCaptured Beautifully.";
-  const subtitle = settings?.heroSubtitle || "Exclusive wedding photography & cinematography preserving your story in fine art.";
+  const subtitle = settings?.heroSubtitle || "Exclusive wedding photography & cinematography preserving your story with timeless elegance.";
   const photographerName = settings?.photographerName || "Abu Toiab";
+
+  // Simulated camera shutter flash effect (every 14s)
+  const [flash, setFlash] = useState(false);
+  useEffect(() => {
+    const flashInterval = setInterval(() => {
+      setFlash(true);
+      setTimeout(() => setFlash(false), 200);
+    }, 14000);
+    return () => clearInterval(flashInterval);
+  }, []);
 
   return (
     <section className="relative w-full min-h-screen flex items-center justify-center overflow-hidden">
+      {/* Shutter flash effect */}
+      <AnimatePresence>
+        {flash && (
+          <motion.div
+            initial={{ opacity: 0.8 }}
+            animate={{ opacity: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3, ease: 'easeOut' }}
+            className="absolute inset-0 z-40 bg-white pointer-events-none"
+          />
+        )}
+      </AnimatePresence>
+
       {/* Background Media */}
-      <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 z-0 bg-brand-black">
+        {/* Base Background Image - Always available as solid fallback */}
+        <img
+          src={imageUrl}
+          alt="Hero Background"
+          className="w-full h-full object-cover opacity-50 scale-105"
+        />
+
+        {/* Video Overlay - Played over image if videoUrl exists */}
         {videoUrl ? (
           <video
             autoPlay
             loop
             muted
             playsInline
-            poster={imageUrl}
             src={videoUrl}
-            className="w-full h-full object-cover opacity-45 scale-105"
+            onError={(e) => { e.target.style.display = 'none'; }}
+            className="absolute inset-0 w-full h-full object-cover opacity-50 scale-105"
           />
-        ) : (
-          <img
-            src={imageUrl}
-            alt="Hero Background"
-            className="w-full h-full object-cover opacity-45 scale-105"
-          />
-        )}
+        ) : null}
+
         {/* Editorial Overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-brand-black/70 via-brand-black/40 to-brand-black" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-transparent via-brand-black/40 to-brand-black/90" />
       </div>
 
-      {/* Faint corner frame lines — editorial magazine touch */}
-      <div className="absolute top-8 left-6 md:top-10 md:left-10 w-10 h-10 border-t border-l border-brand-gold/30 z-10" />
-      <div className="absolute bottom-8 right-6 md:bottom-10 md:right-10 w-10 h-10 border-b border-r border-brand-gold/30 z-10" />
+      {/* Camera Viewfinder OSD HUD Elements (Professional Photography Overlay) */}
+      <div className="absolute inset-0 z-10 pointer-events-none p-6 md:p-12 flex flex-col justify-between">
+        {/* Top bar HUD */}
+        <div className="flex items-center justify-between text-[10px] sm:text-xs font-mono tracking-widest text-brand-gold/70">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
+            <span className="text-red-400 font-semibold tracking-wider">REC</span>
+            <span className="text-brand-cream/40 hidden sm:inline">| 4K UHD 60FPS</span>
+          </div>
+          <div className="flex items-center gap-4 text-brand-cream/60">
+            <span>ISO 100</span>
+            <span>ƒ/1.4</span>
+            <span>1/250s</span>
+          </div>
+        </div>
+
+        {/* Viewfinder Center Crosshair Focus Points */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 border border-brand-gold/15 rounded-full pointer-events-none flex items-center justify-center">
+          <div className="w-24 h-24 border border-dashed border-brand-gold/25 rounded-full animate-[spin_35s_linear_infinite]" />
+          <span className="absolute w-3 h-[1px] bg-brand-gold/40" />
+          <span className="absolute h-3 w-[1px] bg-brand-gold/40" />
+        </div>
+
+        {/* Bottom bar HUD */}
+        <div className="flex items-center justify-between text-[9px] sm:text-[10px] font-mono tracking-widest text-brand-cream/40">
+          <div className="hidden sm:flex items-center gap-2 text-brand-gold/60">
+            <Focus className="w-3 h-3" />
+            <span>CONTINUOUS AF-C</span>
+          </div>
+          <div className="ml-auto flex items-center gap-3">
+            <span>RAW + LOG</span>
+            <span className="text-brand-gold/80">BAT 98%</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Faint corner frame lines — editorial viewfinder brackets */}
+      <div className="absolute top-8 left-6 md:top-10 md:left-10 w-10 h-10 border-t-2 border-l-2 border-brand-gold/40 z-10" />
+      <div className="absolute top-8 right-6 md:top-10 md:right-10 w-10 h-10 border-t-2 border-r-2 border-brand-gold/40 z-10" />
+      <div className="absolute bottom-8 left-6 md:bottom-10 md:left-10 w-10 h-10 border-b-2 border-l-2 border-brand-gold/40 z-10" />
+      <div className="absolute bottom-8 right-6 md:bottom-10 md:right-10 w-10 h-10 border-b-2 border-r-2 border-brand-gold/40 z-10" />
 
       {/* Hero Content */}
-      <div className="relative z-10 max-w-5xl px-6 mx-auto text-center flex flex-col items-center pt-16">
+      <div className="relative z-20 max-w-5xl px-6 mx-auto text-center flex flex-col items-center pt-16">
 
         {/* Profile Portrait + Signature Badge */}
         <motion.div

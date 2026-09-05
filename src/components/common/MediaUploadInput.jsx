@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { UploadCloud, Loader2, CheckCircle2, AlertCircle, X, Image as ImageIcon, Video as VideoIcon } from 'lucide-react';
-import { uploadToImgBB } from '../../config/upload';
+import { uploadToCloudinary } from '../../config/upload';
 
 const MediaUploadInput = ({
   label,
@@ -13,6 +13,7 @@ const MediaUploadInput = ({
   className = ''
 }) => {
   const [uploading, setUploading] = useState(false);
+  const [progress, setProgress] = useState(0);
   const [uploadMsg, setUploadMsg] = useState(null); // { type: 'success'|'error', text: '' }
   const fileInputRef = useRef(null);
 
@@ -21,28 +22,29 @@ const MediaUploadInput = ({
     if (!file) return;
 
     setUploading(true);
+    setProgress(0);
     setUploadMsg(null);
 
     try {
-      if (file.type.startsWith('image/')) {
-        // Upload image to ImgBB
-        const imageUrl = await uploadToImgBB(file);
-        onChange(imageUrl);
-        setUploadMsg({ type: 'success', text: 'Image uploaded to ImgBB successfully!' });
-      } else if (file.type.startsWith('video/')) {
-        // Handle Video upload or Base64 / Cloudinary / direct Blob
-        const videoBlobUrl = URL.createObjectURL(file);
-        onChange(videoBlobUrl);
-        setUploadMsg({ type: 'success', text: 'Video selected locally!' });
-      } else {
-        throw new Error('Unsupported file type');
-      }
+      // Upload to Cloudinary CDN (Portfolio Cloud)
+      const uploadedUrl = await uploadToCloudinary(file, (percent) => {
+        setProgress(percent);
+      });
+
+      onChange(uploadedUrl);
+      setUploadMsg({
+        type: 'success',
+        text: `${file.type.startsWith('video/') ? 'Video' : 'Image'} uploaded to Cloudinary CDN successfully!`
+      });
     } catch (err) {
-      console.error('Upload Error:', err);
-      setUploadMsg({ type: 'error', text: err.message || 'Upload failed. Please check your network or try pasting a link.' });
+      console.error('Cloudinary Upload Error:', err);
+      setUploadMsg({
+        type: 'error',
+        text: err.message || 'Upload failed. Please check network connection or paste a direct URL.'
+      });
     } finally {
       setUploading(false);
-      // Reset input so same file can be re-selected if needed
+      setProgress(0);
       if (fileInputRef.current) fileInputRef.current.value = '';
     }
   };
@@ -52,7 +54,7 @@ const MediaUploadInput = ({
     setUploadMsg(null);
   };
 
-  const isVideo = mediaType === 'video' || (value && (value.endsWith('.mp4') || value.endsWith('.webm') || value.includes('mixkit') || value.includes('video')));
+  const isVideo = mediaType === 'video' || (value && (value.endsWith('.mp4') || value.endsWith('.webm') || value.includes('mixkit') || value.includes('video') || value.startsWith('data:video')));
 
   return (
     <div className={`space-y-2 ${className}`}>
@@ -104,7 +106,7 @@ const MediaUploadInput = ({
           {uploading ? (
             <>
               <Loader2 className="w-4 h-4 animate-spin text-brand-gold" />
-              <span>Uploading...</span>
+              <span>Uploading {progress > 0 ? `${progress}%` : '...'}</span>
             </>
           ) : (
             <>

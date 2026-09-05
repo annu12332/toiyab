@@ -6,9 +6,9 @@ import getApiUrl from '../../config/api';
 const DEFAULT_EXPERIENCES = [
   {
     _id: 'exp-1',
-    companyName: 'Abu Toiab Fine Art Studio',
+    companyName: 'Abu Toiab Photography Studio',
     companyLogo: 'https://images.unsplash.com/photo-1542038784456-1ea8e935640e?q=80&w=200',
-    role: 'Lead Fine Art Photographer & Director',
+    role: 'Lead Photographer & Creative Director',
     duration: '36 Months',
     shortDetails: 'Directing high-end destination wedding stories and editorial portraits globally.'
   },

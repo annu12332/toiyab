@@ -19,6 +19,8 @@ const AdminDashboard = () => {
     profileImageUrl: '',
     photographerName: '',
     whatsappNumber: '',
+    facebookUrl: '',
+    instagramUrl: '',
     aboutText: '',
     aboutPhotoUrl: '',
     yearsExperience: 8,
@@ -89,12 +91,14 @@ const AdminDashboard = () => {
         const setObj = await setRes.json();
         setSettingsForm({
           heroTitle: setObj.heroTitle || 'Timeless Love,\nCaptured Beautifully.',
-          heroSubtitle: setObj.heroSubtitle || 'Exclusive wedding photography & cinematography preserving your story in fine art.',
+          heroSubtitle: setObj.heroSubtitle || 'Exclusive wedding photography & cinematography preserving your story with timeless elegance.',
           heroVideoUrl: setObj.heroVideoUrl || '',
           heroImageUrl: setObj.heroImageUrl || '',
           profileImageUrl: setObj.profileImageUrl || '',
           photographerName: setObj.photographerName || 'Abu Toiab',
           whatsappNumber: setObj.whatsappNumber || '+8801700000000',
+          facebookUrl: setObj.facebookUrl || 'https://facebook.com',
+          instagramUrl: setObj.instagramUrl || 'https://instagram.com',
           aboutText: setObj.aboutText || '',
           aboutPhotoUrl: setObj.aboutPhotoUrl || '',
           yearsExperience: setObj.yearsExperience || 8,
@@ -522,6 +526,34 @@ const AdminDashboard = () => {
                       type="text"
                       value={settingsForm.heroTitle}
                       onChange={(e) => setSettingsForm({ ...settingsForm, heroTitle: e.target.value })}
+                      className="w-full bg-brand-black/70 border border-brand-gold/20 text-brand-cream p-3 text-sm focus:border-brand-gold focus:outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-xs uppercase tracking-widest text-brand-cream/70 mb-2 font-light">
+                      Facebook Profile/Page URL
+                    </label>
+                    <input
+                      type="url"
+                      value={settingsForm.facebookUrl}
+                      onChange={(e) => setSettingsForm({ ...settingsForm, facebookUrl: e.target.value })}
+                      placeholder="https://facebook.com/yourprofile"
+                      className="w-full bg-brand-black/70 border border-brand-gold/20 text-brand-cream p-3 text-sm focus:border-brand-gold focus:outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs uppercase tracking-widest text-brand-cream/70 mb-2 font-light">
+                      Instagram Profile URL
+                    </label>
+                    <input
+                      type="url"
+                      value={settingsForm.instagramUrl}
+                      onChange={(e) => setSettingsForm({ ...settingsForm, instagramUrl: e.target.value })}
+                      placeholder="https://instagram.com/yourprofile"
                       className="w-full bg-brand-black/70 border border-brand-gold/20 text-brand-cream p-3 text-sm focus:border-brand-gold focus:outline-none"
                     />
                   </div>

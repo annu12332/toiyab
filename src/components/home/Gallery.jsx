@@ -94,7 +94,7 @@ const Gallery = ({ showViewAll = true }) => {
     ? items
     : items.filter(item => (item.category || 'Weddings').toLowerCase() === activeCategory.toLowerCase());
 
-  const displayItems = showViewAll ? filteredItems.slice(0, 3) : filteredItems;
+  const displayItems = showViewAll ? filteredItems.slice(0, 4) : filteredItems;
 
   const handleNext = (e) => {
     e.stopPropagation();
@@ -110,10 +110,23 @@ const Gallery = ({ showViewAll = true }) => {
     }
   };
 
+  // Animation variants
+  const cardVariants = {
+    hidden: { opacity: 0, scale: 0.9, y: 30 },
+    visible: (i) => ({
+      opacity: 1,
+      scale: 1,
+      y: 0,
+      transition: { duration: 0.55, delay: i * 0.1, ease: [0.25, 0.46, 0.45, 0.94] }
+    }),
+    exit: { opacity: 0, scale: 0.9 }
+  };
+
   return (
-    <section id="portfolio" className="py-16 lg:py-24 bg-brand-black text-brand-cream relative">
+    <section id="portfolio" className="py-16 lg:py-24 bg-brand-black text-brand-cream relative overflow-hidden">
       {/* Background Subtle Gradient */}
       <div className="absolute top-1/2 left-0 w-96 h-96 bg-brand-gold/5 rounded-full blur-3xl pointer-events-none -translate-y-1/2" />
+      <div className="absolute bottom-0 right-0 w-80 h-80 bg-brand-gold/3 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         {/* Header */}
@@ -131,10 +144,21 @@ const Gallery = ({ showViewAll = true }) => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-4xl md:text-6xl font-serif font-light text-brand-cream leading-tight mb-6"
+            className="text-4xl md:text-6xl font-serif font-light text-brand-cream leading-tight mb-4"
           >
-            The Fine Art Gallery
+            The Photography Portfolio
           </motion.h2>
+
+          {/* Animated gold accent underline */}
+          <motion.div
+            initial={{ scaleX: 0, opacity: 0 }}
+            whileInView={{ scaleX: 1, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.25, ease: [0.25, 0.46, 0.45, 0.94] }}
+            style={{ transformOrigin: 'center' }}
+            className="mx-auto mb-6 h-[1px] w-24 bg-gradient-to-r from-transparent via-brand-gold to-transparent"
+          />
+
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -169,19 +193,22 @@ const Gallery = ({ showViewAll = true }) => {
           </motion.div>
         </div>
 
-        {/* Gallery Grid */}
-        <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+        {/* Gallery Grid - 2 Columns on Mobile, 4 Columns on Desktop */}
+        <motion.div layout className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
           <AnimatePresence>
             {displayItems.map((item, index) => (
               <motion.div
                 key={item._id || index}
                 layout
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.5, delay: index * 0.05 }}
+                custom={index}
+                variants={cardVariants}
+                initial="hidden"
+                whileInView="visible"
+                exit="exit"
+                viewport={{ once: true }}
+                whileHover={{ y: -8, transition: { type: 'spring', stiffness: 280, damping: 20 } }}
                 onClick={() => setSelectedImageIndex(index)}
-                className="group relative overflow-hidden bg-brand-dark cursor-pointer border border-brand-gold/10 hover:border-brand-gold/40 transition-all duration-500 shadow-xl"
+                className="group relative overflow-hidden bg-brand-dark cursor-pointer border border-brand-gold/10 hover:border-brand-gold/50 transition-colors duration-500 shadow-xl hover:shadow-[0_12px_40px_-8px_rgba(212,175,55,0.3)] rounded-sm"
               >
                 <div className="aspect-[4/5] overflow-hidden">
                   <img
@@ -192,21 +219,26 @@ const Gallery = ({ showViewAll = true }) => {
                   />
                 </div>
 
-                {/* Subtle Hover Gradient & Details */}
-                <div className="absolute inset-0 bg-gradient-to-t from-brand-black/90 via-brand-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-between p-6">
-                  <div className="self-end">
-                    <div className="w-10 h-10 rounded-full bg-brand-black/60 backdrop-blur-md border border-brand-gold/40 flex items-center justify-center text-brand-gold">
-                      <Maximize2 className="w-4 h-4" />
+                {/* Subtle Hover & Mobile Gradient Details */}
+                <div className="absolute inset-0 bg-gradient-to-t from-brand-black/90 via-brand-black/20 to-transparent opacity-90 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-between p-3 sm:p-6">
+                  <div className="self-end hidden sm:block">
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-brand-black/60 backdrop-blur-md border border-brand-gold/40 flex items-center justify-center text-brand-gold">
+                      <Maximize2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                     </div>
                   </div>
                   <div>
-                    <span className="text-[10px] uppercase tracking-[0.3em] text-brand-gold block mb-1">
+                    <span className="text-[8px] sm:text-[10px] uppercase tracking-[0.25em] text-brand-gold block mb-0.5 sm:mb-1">
                       {item.category || 'Weddings'}
                     </span>
-                    <h3 className="text-xl font-serif text-brand-cream font-light">
+                    <h3 className="text-sm sm:text-xl font-serif text-brand-cream font-light line-clamp-1">
                       {item.title}
                     </h3>
                   </div>
+                </div>
+
+                {/* Gold shimmer scan line on hover */}
+                <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-sm">
+                  <div className="absolute -top-full left-0 w-full h-full bg-gradient-to-b from-transparent via-brand-gold/8 to-transparent group-hover:translate-y-[200%] transition-transform duration-1000 ease-in-out" />
                 </div>
               </motion.div>
             ))}
@@ -223,10 +255,12 @@ const Gallery = ({ showViewAll = true }) => {
           >
             <Link
               to="/images"
-              className="btn-gold inline-flex items-center gap-3 !py-3.5 !px-8 text-xs uppercase tracking-[0.25em] shadow-xl group"
+              className="btn-gold inline-flex items-center gap-3 !py-3.5 !px-8 text-xs uppercase tracking-[0.25em] shadow-xl group relative overflow-hidden"
             >
-              <span>View All Fine Art Photos ({items.length})</span>
-              <ArrowRight className="w-4 h-4 text-brand-gold group-hover:translate-x-1 transition-transform" />
+              <span className="relative z-10">View All Photos ({items.length})</span>
+              <ArrowRight className="w-4 h-4 text-brand-gold group-hover:translate-x-1 transition-transform relative z-10" />
+              {/* Button shimmer glint */}
+              <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-700 ease-in-out" />
             </Link>
           </motion.div>
         )}
