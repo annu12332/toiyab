@@ -231,16 +231,15 @@ const AdminDashboard = () => {
       if (res.ok) {
         const newFilm = await res.json();
         setVideos([newFilm, ...videos]);
-        setFilmMsg('Cinematic Video Reel added successfully!');
+        setFilmMsg({ type: 'success', text: 'Cinematic Video Reel added & saved to database successfully!' });
         setFilmForm({ title: '', videoUrl: '', posterUrl: '', duration: '', location: '' });
       } else {
-        setFilmMsg('Failed to add video reel.');
+        const errData = await res.json().catch(() => ({}));
+        setFilmMsg({ type: 'error', text: errData.message || `Failed to save video (Status ${res.status}). Check backend connection.` });
       }
     } catch (err) {
-      const demoFilm = { ...filmForm, _id: Date.now().toString() };
-      setVideos([demoFilm, ...videos]);
-      setFilmMsg('Video reel saved locally in preview mode.');
-      setFilmForm({ title: '', videoUrl: '', posterUrl: '', duration: '', location: '' });
+      console.error('Error adding film:', err);
+      setFilmMsg({ type: 'error', text: `Backend connection error (${err.message}). Is the backend server online?` });
     }
   };
 
@@ -736,8 +735,13 @@ const AdminDashboard = () => {
               </h2>
 
               {filmMsg && (
-                <div className="p-3 mb-6 bg-brand-gold/10 border border-brand-gold/40 text-brand-gold text-xs">
-                  {filmMsg}
+                <div className={`p-3 mb-6 border text-xs flex items-center justify-between ${
+                  typeof filmMsg === 'object' && filmMsg.type === 'error'
+                    ? 'bg-rose-500/10 border-rose-500/40 text-rose-300'
+                    : 'bg-brand-gold/10 border-brand-gold/40 text-brand-gold'
+                }`}>
+                  <span>{typeof filmMsg === 'object' ? filmMsg.text : filmMsg}</span>
+                  <button onClick={() => setFilmMsg('')} className="text-xs opacity-60 hover:opacity-100 ml-3">✕</button>
                 </div>
               )}
 
