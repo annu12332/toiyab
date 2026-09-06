@@ -1,5 +1,5 @@
 // Cloudinary API configuration and helper functions
-export const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || 'portfolio';
+export const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || 'hotelproject';
 export const CLOUDINARY_API_KEY = import.meta.env.VITE_CLOUDINARY_API_KEY || '322574116488769';
 export const CLOUDINARY_API_SECRET = import.meta.env.VITE_CLOUDINARY_API_SECRET || 'TdswcO29cHuCA5UH6EoVKTZMYII';
 
