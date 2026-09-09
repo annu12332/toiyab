@@ -51,7 +51,7 @@ const Testimonials = () => {
             transition={{ delay: 0.1 }}
             className="text-4xl md:text-6xl font-serif font-light text-brand-cream leading-tight mb-6"
           >
-            Love Stories & Kind Words
+            Clients Review
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 20 }}

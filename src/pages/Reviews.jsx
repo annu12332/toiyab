@@ -137,7 +137,7 @@ const Reviews = () => {
             transition={{ delay: 0.1 }}
             className="text-4xl md:text-6xl font-serif font-light text-brand-cream leading-tight mb-4"
           >
-            Love Stories & Reviews
+            Clients Review
           </motion.h1>
 
           <motion.div
