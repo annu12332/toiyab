@@ -4,69 +4,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight, Maximize2, Sparkles, ArrowRight } from 'lucide-react';
 import getApiUrl from '../../config/api';
 
-const DEFAULT_GALLERY = [
-  {
-    _id: 'g1',
-    title: 'The Eternal Vows',
-    category: 'Weddings',
-    url: 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1200',
-    aspect: 'aspect-[4/5]'
-  },
-  {
-    _id: 'g2',
-    title: 'Golden Sunset Romance',
-    category: 'Pre-Wedding',
-    url: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=1200',
-    aspect: 'aspect-[3/4]'
-  },
-  {
-    _id: 'g3',
-    title: 'Royalty in Emerald',
-    category: 'Portraits',
-    url: 'https://images.unsplash.com/photo-1544168190-79c15427015f?q=80&w=1200',
-    aspect: 'aspect-[4/5]'
-  },
-  {
-    _id: 'g4',
-    title: 'Whispering Promises',
-    category: 'Ceremony',
-    url: 'https://images.unsplash.com/photo-1520854221256-17451cc331bf?q=80&w=1200',
-    aspect: 'aspect-[16/10]'
-  },
-  {
-    _id: 'g5',
-    title: 'The First Waltz',
-    category: 'Weddings',
-    url: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=1200',
-    aspect: 'aspect-[4/5]'
-  },
-  {
-    _id: 'g6',
-    title: 'Heirloom Jewels & Ring',
-    category: 'Ceremony',
-    url: 'https://images.unsplash.com/photo-1606800052052-a08af7148866?q=80&w=1200',
-    aspect: 'aspect-[1/1]'
-  },
-  {
-    _id: 'g7',
-    title: 'Serenade at Dusk',
-    category: 'Pre-Wedding',
-    url: 'https://images.unsplash.com/photo-1583939003579-730e3918a45a?q=80&w=1200',
-    aspect: 'aspect-[4/5]'
-  },
-  {
-    _id: 'g8',
-    title: 'Bridal Grace',
-    category: 'Portraits',
-    url: 'https://images.unsplash.com/photo-1529636798458-92182e662485?q=80&w=1200',
-    aspect: 'aspect-[3/4]'
-  }
-];
-
 const CATEGORIES = ['All', 'Weddings', 'Pre-Wedding', 'Ceremony', 'Portraits'];
 
 const Gallery = ({ showViewAll = true }) => {
-  const [items, setItems] = useState(DEFAULT_GALLERY);
+  const [items, setItems] = useState([]);
   const [activeCategory, setActiveCategory] = useState('All');
   const [selectedImageIndex, setSelectedImageIndex] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -244,6 +185,15 @@ const Gallery = ({ showViewAll = true }) => {
             ))}
           </AnimatePresence>
         </motion.div>
+
+        {/* Empty State */}
+        {!loading && items.length === 0 && (
+          <div className="text-center py-16 px-4 bg-brand-dark/40 border border-brand-gold/15 max-w-xl mx-auto mt-8">
+            <Sparkles className="w-8 h-8 text-brand-gold/60 mx-auto mb-3" />
+            <p className="text-sm font-serif text-brand-cream/80">No photos in portfolio yet.</p>
+            <p className="text-xs text-brand-cream/50 mt-1">Upload your work from the Admin Dashboard.</p>
+          </div>
+        )}
 
         {/* View All Button */}
         {showViewAll && (

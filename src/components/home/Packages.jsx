@@ -3,55 +3,9 @@ import { motion } from 'framer-motion';
 import { Check, Crown, Award } from 'lucide-react';
 import getApiUrl from '../../config/api';
 
-const DEFAULT_PACKAGES = [
-  {
-    _id: 'p1',
-    name: 'The Essential Story',
-    price: '৳85,000',
-    subtitle: 'Perfect for intimate celebrations & single-day ceremonies.',
-    features: [
-      '8 Hours Single Photographer Coverage',
-      'High-Resolution Edited Digital Gallery',
-      'Pre-Wedding Couple Mini Portrait Session',
-      'Online Client Delivery Gallery (1 Year Online)',
-      'High Quality USB Drive with Wooden Box'
-    ],
-    isPopular: false
-  },
-  {
-    _id: 'p2',
-    name: 'The Signature Experience',
-    price: '৳1,50,000',
-    subtitle: 'Our most sought-after multi-day complete visual coverage.',
-    features: [
-      'Full Day Multi-Ceremony Coverage (2 Days)',
-      'Lead Photographer (Abu Toiab) + Associate Photographer',
-      'Cinematic Trailer Video (3-5 mins) + Highlight Reel',
-      '300+ Artistically Retouched Master Prints',
-      'Premium Hardcover Heirloom Album (12x18")',
-      'Drone Aerial Videography (Weather permitting)'
-    ],
-    isPopular: true
-  },
-  {
-    _id: 'p3',
-    name: 'The Heirloom Collection',
-    price: '৳2,40,000',
-    subtitle: 'The ultimate luxury bespoke experience for grand weddings.',
-    features: [
-      'Unlimited Hours Coverage across 3 Days',
-      'Full Team: Abu Toiab + 2 Senior Photographers + 2 Cinematographers',
-      'Full Length Feature Film (15-20 mins) + 4K Teaser Reel',
-      '2 Custom Handcrafted Leather Heirloom Albums',
-      'Parents Companion Albums (Set of 2)',
-      'Framed Canvas Wall Art Piece (24x36")'
-    ],
-    isPopular: false
-  }
-];
-
 const Packages = ({ onSelectPackage }) => {
-  const [packages, setPackages] = useState(DEFAULT_PACKAGES);
+  const [packages, setPackages] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchPackages = async () => {
@@ -61,10 +15,16 @@ const Packages = ({ onSelectPackage }) => {
           const data = await res.json();
           if (data && data.length > 0) {
             setPackages(data);
+          } else {
+            setPackages([]);
           }
+        } else {
+          setPackages([]);
         }
       } catch (err) {
-        console.log('Using default investment packages');
+        setPackages([]);
+      } finally {
+        setLoading(false);
       }
     };
     fetchPackages();
@@ -177,6 +137,15 @@ const Packages = ({ onSelectPackage }) => {
             </motion.div>
           ))}
         </div>
+
+        {/* Empty State */}
+        {!loading && packages.length === 0 && (
+          <div className="text-center py-16 px-4 bg-brand-dark/40 border border-brand-gold/15 max-w-xl mx-auto mt-6">
+            <Crown className="w-8 h-8 text-brand-gold/60 mx-auto mb-3" />
+            <p className="text-sm font-serif text-brand-cream/80">Investment collections will be announced soon.</p>
+            <p className="text-xs text-brand-cream/50 mt-1">Please inquire directly for bespoke wedding & event packages.</p>
+          </div>
+        )}
 
         <div className="mt-16 text-center text-xs uppercase tracking-widest text-brand-cream/50 font-light">
           * Custom destination wedding packages & hourly rates available upon request.

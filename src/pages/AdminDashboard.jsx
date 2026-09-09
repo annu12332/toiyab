@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Sliders, Image as ImageIcon, Video as VideoIcon, Heart, Inbox, LogOut, Plus, Trash2, CheckCircle, Clock, Sparkles, Briefcase, Building2, Edit, Film, Play } from 'lucide-react';
+import { Sliders, Image as ImageIcon, Video as VideoIcon, Heart, Inbox, LogOut, Plus, Trash2, CheckCircle, Clock, Sparkles, Briefcase, Building2, Edit, Film, Play, Star } from 'lucide-react';
 import getApiUrl from '../config/api';
 import MediaUploadInput from '../components/common/MediaUploadInput';
 
@@ -60,7 +60,8 @@ const AdminDashboard = () => {
     message: '',
     weddingDate: '',
     location: '',
-    photoUrl: ''
+    photoUrl: '',
+    rating: 5
   });
   const [storyMsg, setStoryMsg] = useState('');
 
@@ -271,16 +272,14 @@ const AdminDashboard = () => {
       if (res.ok) {
         const newStory = await res.json();
         setTestimonials([newStory, ...testimonials]);
-        setStoryMsg('Love Story added successfully!');
-        setStoryForm({ coupleNames: '', message: '', weddingDate: '', location: '', photoUrl: '' });
+        setStoryMsg('Love Story / Review added successfully!');
+        setStoryForm({ coupleNames: '', message: '', weddingDate: '', location: '', photoUrl: '', rating: 5 });
       } else {
-        setStoryMsg('Failed to add love story.');
+        const errData = await res.json().catch(() => ({}));
+        setStoryMsg(errData.message || 'Failed to add love story.');
       }
     } catch (err) {
-      const demoStory = { ...storyForm, _id: Date.now().toString() };
-      setTestimonials([demoStory, ...testimonials]);
-      setStoryMsg('Love story saved locally in preview mode.');
-      setStoryForm({ coupleNames: '', message: '', weddingDate: '', location: '', photoUrl: '' });
+      setStoryMsg('Network error: Could not reach backend server.');
     }
   };
 
@@ -446,7 +445,7 @@ const AdminDashboard = () => {
             }`}
           >
             <Heart className="w-4 h-4" />
-            <span>Love Stories</span>
+            <span>Reviews & Stories</span>
           </button>
 
           <button
@@ -869,7 +868,7 @@ const AdminDashboard = () => {
             <div className="bg-brand-dark/90 border border-brand-gold/20 p-8 shadow-2xl max-w-4xl">
               <h2 className="text-2xl font-serif text-brand-cream mb-6 flex items-center gap-2 font-light">
                 <Plus className="w-5 h-5 text-brand-gold" />
-                Add New Couple Love Story / Review
+                Add New Client Review / Love Story
               </h2>
 
               {storyMsg && (
@@ -882,7 +881,7 @@ const AdminDashboard = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-xs uppercase tracking-widest text-brand-cream/70 mb-2 font-light">
-                      Couple Names *
+                      Couple / Client Name(s) *
                     </label>
                     <input
                       type="text"
@@ -896,7 +895,39 @@ const AdminDashboard = () => {
 
                   <div>
                     <label className="block text-xs uppercase tracking-widest text-brand-cream/70 mb-2 font-light">
-                      Wedding Date / Location
+                      Rating (Stars)
+                    </label>
+                    <select
+                      value={storyForm.rating}
+                      onChange={(e) => setStoryForm({ ...storyForm, rating: Number(e.target.value) })}
+                      className="w-full bg-brand-black/70 border border-brand-gold/20 text-brand-cream p-3 text-sm focus:border-brand-gold focus:outline-none"
+                    >
+                      <option value="5">★★★★★ (5 Stars - Exceptional)</option>
+                      <option value="4">★★★★☆ (4 Stars - Great)</option>
+                      <option value="3">★★★☆☆ (3 Stars - Good)</option>
+                      <option value="2">★★☆☆☆ (2 Stars - Average)</option>
+                      <option value="1">★☆☆☆☆ (1 Star)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-xs uppercase tracking-widest text-brand-cream/70 mb-2 font-light">
+                      Wedding Date / Event
+                    </label>
+                    <input
+                      type="text"
+                      value={storyForm.weddingDate}
+                      onChange={(e) => setStoryForm({ ...storyForm, weddingDate: e.target.value })}
+                      placeholder="e.g. Winter 2024"
+                      className="w-full bg-brand-black/70 border border-brand-gold/20 text-brand-cream p-3 text-sm focus:border-brand-gold focus:outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs uppercase tracking-widest text-brand-cream/70 mb-2 font-light">
+                      Location / Venue
                     </label>
                     <input
                       type="text"
@@ -909,7 +940,7 @@ const AdminDashboard = () => {
                 </div>
 
                 <MediaUploadInput
-                  label="Couple Photo Image"
+                  label="Couple / Client Photo Image (Optional)"
                   value={storyForm.photoUrl}
                   onChange={(newUrl) => setStoryForm({ ...storyForm, photoUrl: newUrl })}
                   placeholder="Upload photo file or paste image URL..."
@@ -919,7 +950,7 @@ const AdminDashboard = () => {
 
                 <div>
                   <label className="block text-xs uppercase tracking-widest text-brand-cream/70 mb-2 font-light">
-                    Testimonial / Kind Words Message *
+                    Testimonial / Review Message *
                   </label>
                   <textarea
                     rows="4"
@@ -932,7 +963,7 @@ const AdminDashboard = () => {
                 </div>
 
                 <button type="submit" className="btn-solid-gold w-full !py-3">
-                  Publish Story To Website
+                  Publish Review / Story To Website
                 </button>
               </form>
             </div>
@@ -940,44 +971,63 @@ const AdminDashboard = () => {
             <div>
               <h3 className="text-xl font-serif text-brand-cream mb-4 font-light flex items-center gap-2">
                 <Heart className="w-5 h-5 text-brand-gold" />
-                Published Love Stories ({testimonials.length})
+                Published Client Reviews & Stories ({testimonials.length})
               </h3>
               {testimonials.length === 0 ? (
                 <div className="p-8 text-center bg-brand-dark/60 border border-brand-gold/15 text-brand-cream/60">
-                  No love stories added yet.
+                  No reviews or love stories added yet.
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {testimonials.map((t) => (
-                    <div key={t._id} className="bg-brand-dark border border-brand-gold/20 p-5 flex flex-col justify-between">
-                      <div>
-                        <div className="flex items-center gap-3 mb-3">
-                          {t.photoUrl && (
-                            <img
-                              src={t.photoUrl}
-                              alt={t.coupleNames}
-                              className="w-10 h-10 rounded-full object-cover border border-brand-gold/40 shrink-0"
-                            />
-                          )}
-                          <div>
-                            <h4 className="text-base font-serif text-brand-cream font-medium">{t.coupleNames}</h4>
-                            <span className="text-[10px] uppercase tracking-widest text-brand-gold block">
-                              {t.location || t.weddingDate || 'Wedding Story'}
-                            </span>
+                  {testimonials.map((t) => {
+                    const stars = Number(t.rating) || 5;
+                    return (
+                      <div key={t._id} className="bg-brand-dark border border-brand-gold/20 p-5 flex flex-col justify-between">
+                        <div>
+                          {/* Stars row */}
+                          <div className="flex items-center gap-1 mb-3">
+                            {Array.from({ length: 5 }).map((_, sIdx) => (
+                              <Star
+                                key={sIdx}
+                                className={`w-3.5 h-3.5 ${
+                                  sIdx < stars ? 'text-brand-gold fill-brand-gold' : 'text-brand-cream/20'
+                                }`}
+                              />
+                            ))}
                           </div>
+
+                          <div className="flex items-center gap-3 mb-3">
+                            {t.photoUrl ? (
+                              <img
+                                src={t.photoUrl}
+                                alt={t.coupleNames}
+                                className="w-10 h-10 rounded-full object-cover border border-brand-gold/40 shrink-0"
+                              />
+                            ) : (
+                              <div className="w-10 h-10 rounded-full bg-brand-black border border-brand-gold/30 flex items-center justify-center text-brand-gold font-serif text-xs shrink-0">
+                                {t.coupleNames?.charAt(0) || 'C'}
+                              </div>
+                            )}
+                            <div className="overflow-hidden">
+                              <h4 className="text-base font-serif text-brand-cream font-medium truncate">{t.coupleNames}</h4>
+                              <span className="text-[10px] uppercase tracking-widest text-brand-gold block truncate">
+                                {t.location || t.weddingDate || 'Wedding Story'}
+                              </span>
+                            </div>
+                          </div>
+                          <p className="text-xs text-brand-cream/80 italic leading-relaxed mb-4">
+                            "{t.message}"
+                          </p>
                         </div>
-                        <p className="text-xs text-brand-cream/80 italic leading-relaxed mb-4">
-                          "{t.message}"
-                        </p>
+                        <button
+                          onClick={() => handleDeleteStory(t._id)}
+                          className="text-rose-400 hover:text-rose-300 text-xs flex items-center gap-1 pt-3 border-t border-brand-gold/10"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" /> Delete Review
+                        </button>
                       </div>
-                      <button
-                        onClick={() => handleDeleteStory(t._id)}
-                        className="text-rose-400 hover:text-rose-300 text-xs flex items-center gap-1 pt-3 border-t border-brand-gold/10"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" /> Delete Story
-                      </button>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </div>

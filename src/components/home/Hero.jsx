@@ -2,16 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Camera, Sparkles, Aperture, Focus } from 'lucide-react';
 
-const DEFAULT_VIDEO = "https://assets.mixkit.co/videos/preview/mixkit-photographer-taking-photos-with-a-camera-42847-large.mp4";
-const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1920";
-
 const Hero = ({ settings }) => {
   const customVideo = settings?.heroVideoUrl && settings.heroVideoUrl.trim();
   const customImage = settings?.heroImageUrl && settings.heroImageUrl.trim();
-  
-  // Use custom video if provided; otherwise fallback to default video if no custom image is set
-  const videoUrl = customVideo ? customVideo : (customImage ? '' : DEFAULT_VIDEO);
-  const imageUrl = customImage || DEFAULT_IMAGE;
+
+  // Only use media if explicitly set from backend — no hardcoded fallbacks
+  const videoUrl = customVideo || null;
+  const imageUrl = customImage || null;
   const profileUrl = settings?.profileImageUrl;
   const title = settings?.heroTitle || "Timeless Love,\nCaptured Beautifully.";
   const subtitle = settings?.heroSubtitle || "Exclusive wedding photography & cinematography preserving your story with timeless elegance.";
@@ -44,14 +41,16 @@ const Hero = ({ settings }) => {
 
       {/* Background Media */}
       <div className="absolute inset-0 z-0 bg-brand-black">
-        {/* Base Background Image - Always available as solid fallback */}
-        <img
-          src={imageUrl}
-          alt="Hero Background"
-          className="w-full h-full object-cover opacity-50 scale-105"
-        />
+        {/* Base Background Image - Only rendered when set from Admin */}
+        {imageUrl && (
+          <img
+            src={imageUrl}
+            alt="Hero Background"
+            className="w-full h-full object-cover opacity-50 scale-105"
+          />
+        )}
 
-        {/* Video Overlay - Played over image if videoUrl exists */}
+        {/* Video Overlay - Only rendered when set from Admin */}
         {videoUrl ? (
           <video
             autoPlay

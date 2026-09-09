@@ -4,37 +4,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Play, X, Film, ArrowRight } from 'lucide-react';
 import getApiUrl from '../../config/api';
 
-const DEFAULT_FILMS = [
-  {
-    _id: 'f1',
-    title: 'A Forest Tale - Ryan & Sophia',
-    videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-bride-and-groom-kissing-in-a-forest-34354-large.mp4',
-    posterUrl: 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1000',
-    duration: '03:45',
-    location: 'Sylhet Tea Estate'
-  },
-  {
-    _id: 'f2',
-    title: 'Echoes of Joy - Tanvir & Ayesha',
-    videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-bride-and-groom-holding-hands-and-walking-in-the-park-34351-large.mp4',
-    posterUrl: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=1000',
-    duration: '04:12',
-    location: 'Dhaka Club'
-  },
-  {
-    _id: 'f3',
-    title: 'Golden Sunset Vows - Zarif & Maya',
-    videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-hands-of-the-bride-and-groom-holding-each-other-34353-large.mp4',
-    posterUrl: 'https://images.unsplash.com/photo-1520854221256-17451cc331bf?q=80&w=1000',
-    duration: '02:50',
-    location: 'Cox’s Bazar Beach'
-  }
-];
-
 const Films = ({ showViewAll = true }) => {
-  const [films, setFilms] = useState(DEFAULT_FILMS);
+  const [films, setFilms] = useState([]);
   const [activeFilm, setActiveFilm] = useState(null);
   const [videoError, setVideoError] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchVideos = async () => {
@@ -44,10 +18,15 @@ const Films = ({ showViewAll = true }) => {
           const data = await res.json();
           if (data && data.length > 0) {
             setFilms(data);
+          } else {
+            setFilms([]);
           }
         }
       } catch (err) {
-        console.log('Using default cinematic film reels');
+        console.log('Error fetching video reels');
+        setFilms([]);
+      } finally {
+        setLoading(false);
       }
     };
     fetchVideos();
@@ -211,6 +190,15 @@ const Films = ({ showViewAll = true }) => {
             </motion.div>
           ))}
         </div>
+
+        {/* Empty State */}
+        {!loading && films.length === 0 && (
+          <div className="text-center py-16 px-4 bg-brand-black/40 border border-brand-gold/15 max-w-xl mx-auto mt-8">
+            <Film className="w-8 h-8 text-brand-gold/60 mx-auto mb-3" />
+            <p className="text-sm font-serif text-brand-cream/80">No cinematic video reels added yet.</p>
+            <p className="text-xs text-brand-cream/50 mt-1">Publish wedding film reels from the Admin Dashboard.</p>
+          </div>
+        )}
 
         {/* View All Button */}
         {showViewAll && (

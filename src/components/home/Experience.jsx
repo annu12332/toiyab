@@ -3,33 +3,6 @@ import { motion } from 'framer-motion';
 import { Briefcase, Calendar, Building2, Sparkles } from 'lucide-react';
 import getApiUrl from '../../config/api';
 
-const DEFAULT_EXPERIENCES = [
-  {
-    _id: 'exp-1',
-    companyName: 'Abu Toiab Photography Studio',
-    companyLogo: 'https://images.unsplash.com/photo-1542038784456-1ea8e935640e?q=80&w=200',
-    role: 'Lead Photographer & Creative Director',
-    duration: '36 Months',
-    shortDetails: 'Directing high-end destination wedding stories and editorial portraits globally.'
-  },
-  {
-    _id: 'exp-2',
-    companyName: 'Elegance Wed Cinema',
-    companyLogo: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=200',
-    role: 'Senior Cinematographer',
-    duration: '24 Months',
-    shortDetails: 'Produced 4K cinematic highlight films and visual documentary narratives.'
-  },
-  {
-    _id: 'exp-3',
-    companyName: 'Vogue Visuals Co.',
-    companyLogo: 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=200',
-    role: 'Associate Wedding Photographer',
-    duration: '18 Months',
-    shortDetails: 'Captured raw candidate moments and luxury bridal portraits.'
-  }
-];
-
 const Experience = () => {
   const [experiences, setExperiences] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -43,13 +16,13 @@ const Experience = () => {
           if (data && data.length > 0) {
             setExperiences(data);
           } else {
-            setExperiences(DEFAULT_EXPERIENCES);
+            setExperiences([]);
           }
         } else {
-          setExperiences(DEFAULT_EXPERIENCES);
+          setExperiences([]);
         }
       } catch (err) {
-        setExperiences(DEFAULT_EXPERIENCES);
+        setExperiences([]);
       } finally {
         setLoading(false);
       }
@@ -166,6 +139,15 @@ const Experience = () => {
             );
           })}
         </div>
+
+        {/* Empty State */}
+        {!loading && experiences.length === 0 && (
+          <div className="text-center py-16 px-4 bg-brand-dark/40 border border-brand-gold/15 max-w-xl mx-auto mt-4">
+            <Briefcase className="w-8 h-8 text-brand-gold/60 mx-auto mb-3" />
+            <p className="text-sm font-serif text-brand-cream/80">No experience items added yet.</p>
+            <p className="text-xs text-brand-cream/50 mt-1">Manage career journey from the Admin Dashboard.</p>
+          </div>
+        )}
 
       </div>
     </section>

@@ -1,8 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { motion, useInView, animate } from 'framer-motion';
 
-const DEFAULT_PORTRAIT = "https://images.unsplash.com/photo-1544168190-79c15427015f?q=80&w=800";
-
 // Animated count-up number, triggers once when in view
 const Counter = ({ to, suffix = "", duration = 1.8 }) => {
   const ref = useRef(null);
@@ -27,7 +25,7 @@ const Counter = ({ to, suffix = "", duration = 1.8 }) => {
 };
 
 const About = ({ settings }) => {
-  const portraitUrl = settings?.aboutPhotoUrl || DEFAULT_PORTRAIT;
+  const portraitUrl = settings?.aboutPhotoUrl || null;
   const storyText = settings?.aboutText || "I believe that wedding photography is an art form of quiet observation. It's about capturing the unscripted poetry of your day — the subtle glances, the raw emotion, and the timeless elegance that makes your story singularly yours.";
   const yearsExp = settings?.yearsExperience || 8;
   const weddingsCount = settings?.weddingsShot || 150;

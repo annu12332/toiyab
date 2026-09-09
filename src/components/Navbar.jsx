@@ -67,6 +67,13 @@ const Navbar = () => {
             Reels
           </Link>
 
+          <Link
+            to="/reviews"
+            className="text-[11px] uppercase tracking-[0.25em] text-brand-cream/80 hover:text-brand-gold transition-colors duration-300 font-light"
+          >
+            Reviews
+          </Link>
+
           <a 
             href={isHome ? '#inquire' : '/#inquire'} 
             className="btn-solid-gold !py-2 !px-5 !text-[11px] font-medium transition-transform hover:scale-105"
@@ -126,6 +133,14 @@ const Navbar = () => {
               className="text-xs uppercase tracking-[0.3em] text-brand-cream/90 hover:text-brand-gold"
             >
               Video Reels
+            </Link>
+
+            <Link
+              to="/reviews"
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-xs uppercase tracking-[0.3em] text-brand-cream/90 hover:text-brand-gold"
+            >
+              Client Reviews
             </Link>
 
             <a 

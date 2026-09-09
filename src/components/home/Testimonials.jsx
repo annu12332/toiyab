@@ -1,37 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Quote, Heart } from 'lucide-react';
+import { Quote, Heart, Star, ArrowRight, PenLine } from 'lucide-react';
 import getApiUrl from '../../config/api';
 
-const DEFAULT_TESTIMONIALS = [
-  {
-    _id: 't1',
-    coupleNames: 'Sarah & Farhan',
-    message: 'Abu Toiab didn’t just photograph our wedding; he captured the soul of our day. Looking through our album feels like reliving every single emotion all over again. He is a true master of fine art imagery.',
-    weddingDate: 'December 2024',
-    location: 'Radisson Blu Water Garden, Dhaka',
-    photoUrl: 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=400'
-  },
-  {
-    _id: 't2',
-    coupleNames: 'Nabila & Rahat',
-    message: 'Working with Abu Toiab was effortlessly natural. We aren’t usually comfortable in front of the camera, but his quiet, warm presence put us at complete ease. The results blew our families away!',
-    weddingDate: 'November 2024',
-    location: 'Grand Sultan Tea Resort, Sylhet',
-    photoUrl: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=400'
-  },
-  {
-    _id: 't3',
-    coupleNames: 'Anika & Shahriar',
-    message: 'The cinematic film Abu Toiab produced for us brought tears to everyone’s eyes. The lighting, color grading, and soundtrack selection were unmatched in quality. Worth every single penny!',
-    weddingDate: 'January 2025',
-    location: 'InterContinental Dhaka',
-    photoUrl: 'https://images.unsplash.com/photo-1520854221256-17451cc331bf?q=80&w=400'
-  }
-];
-
 const Testimonials = () => {
-  const [testimonials, setTestimonials] = useState(DEFAULT_TESTIMONIALS);
+  const [testimonials, setTestimonials] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchTestimonials = async () => {
@@ -41,10 +16,16 @@ const Testimonials = () => {
           const data = await res.json();
           if (data && data.length > 0) {
             setTestimonials(data);
+          } else {
+            setTestimonials([]);
           }
+        } else {
+          setTestimonials([]);
         }
       } catch (err) {
-        console.log('Using default love stories');
+        setTestimonials([]);
+      } finally {
+        setLoading(false);
       }
     };
     fetchTestimonials();
@@ -85,41 +66,105 @@ const Testimonials = () => {
 
         {/* Testimonials Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {testimonials.map((item, index) => (
-            <motion.div
-              key={item._id || index}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-              className="bg-brand-black border border-brand-gold/15 p-8 flex flex-col justify-between hover:border-brand-gold/40 transition-all duration-500 relative"
-            >
-              <Quote className="w-10 h-10 text-brand-gold/20 mb-6" />
-
-              <p className="text-sm font-sans font-light text-brand-cream/80 italic leading-relaxed mb-8">
-                "{item.message}"
-              </p>
-
-              <div className="flex items-center gap-4 pt-6 border-t border-brand-gold/10">
-                {item.photoUrl && (
-                  <img
-                    src={item.photoUrl}
-                    alt={item.coupleNames}
-                    className="w-12 h-12 rounded-full object-cover border border-brand-gold/40"
-                  />
-                )}
+          {testimonials.slice(0, 6).map((item, index) => {
+            const stars = Number(item.rating) || 5;
+            return (
+              <motion.div
+                key={item._id || index}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                className="bg-brand-black border border-brand-gold/15 p-8 flex flex-col justify-between hover:border-brand-gold/40 transition-all duration-500 relative group shadow-xl hover:shadow-[0_12px_40px_-8px_rgba(212,175,55,0.15)]"
+              >
                 <div>
-                  <h4 className="text-lg font-serif text-brand-cream font-light">
-                    {item.coupleNames}
-                  </h4>
-                  <span className="text-[10px] uppercase tracking-widest text-brand-gold block">
-                    {item.location || item.weddingDate || 'Wedding Story'}
-                  </span>
+                  {/* Rating Stars & Quote Icon */}
+                  <div className="flex justify-between items-center mb-6">
+                    <div className="flex items-center gap-1">
+                      {Array.from({ length: 5 }).map((_, sIdx) => (
+                        <Star
+                          key={sIdx}
+                          className={`w-3.5 h-3.5 ${
+                            sIdx < stars ? 'text-brand-gold fill-brand-gold' : 'text-brand-cream/20'
+                          }`}
+                        />
+                      ))}
+                    </div>
+                    <Quote className="w-8 h-8 text-brand-gold/20 group-hover:text-brand-gold/40 transition-colors" />
+                  </div>
+
+                  <p className="text-sm font-sans font-light text-brand-cream/80 italic leading-relaxed mb-8">
+                    "{item.message}"
+                  </p>
                 </div>
-              </div>
-            </motion.div>
-          ))}
+
+                <div className="flex items-center gap-4 pt-6 border-t border-brand-gold/10">
+                  {item.photoUrl ? (
+                    <img
+                      src={item.photoUrl}
+                      alt={item.coupleNames}
+                      className="w-12 h-12 rounded-full object-cover border border-brand-gold/40 shrink-0"
+                    />
+                  ) : (
+                    <div className="w-12 h-12 rounded-full bg-brand-dark border border-brand-gold/30 flex items-center justify-center text-brand-gold font-serif text-sm font-light shrink-0">
+                      {item.coupleNames?.charAt(0) || 'C'}
+                    </div>
+                  )}
+                  <div className="overflow-hidden">
+                    <h4 className="text-base font-serif text-brand-cream font-light truncate">
+                      {item.coupleNames}
+                    </h4>
+                    <span className="text-[10px] uppercase tracking-widest text-brand-gold block truncate">
+                      {item.location || item.weddingDate || 'Wedding Story'}
+                    </span>
+                  </div>
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
+
+        {/* Empty State */}
+        {!loading && testimonials.length === 0 && (
+          <div className="text-center py-16 px-4 bg-brand-black/40 border border-brand-gold/15 max-w-xl mx-auto mt-6">
+            <Heart className="w-8 h-8 text-brand-gold/60 mx-auto mb-3" />
+            <p className="text-sm font-serif text-brand-cream/80">No stories or reviews published yet.</p>
+            <p className="text-xs text-brand-cream/50 mt-1 mb-6">Be the first to share your experience with Abu Toiab.</p>
+            <Link
+              to="/reviews"
+              className="btn-solid-gold !py-2.5 !px-6 text-xs inline-flex items-center gap-2"
+            >
+              <PenLine className="w-3.5 h-3.5" />
+              <span>Leave a Review</span>
+            </Link>
+          </div>
+        )}
+
+        {/* Action Buttons */}
+        {!loading && testimonials.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mt-14 flex flex-col sm:flex-row items-center justify-center gap-4"
+          >
+            <Link
+              to="/reviews"
+              className="btn-solid-gold inline-flex items-center gap-2 !py-3 !px-7 text-xs uppercase tracking-[0.2em]"
+            >
+              <PenLine className="w-4 h-4" />
+              <span>Write a Review</span>
+            </Link>
+
+            <Link
+              to="/reviews"
+              className="btn-gold inline-flex items-center gap-2 !py-3 !px-7 text-xs uppercase tracking-[0.2em]"
+            >
+              <span>View All Client Stories ({testimonials.length})</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </motion.div>
+        )}
       </div>
     </section>
   );
