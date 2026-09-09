@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Quote, Heart, Star, ArrowRight, PenLine } from 'lucide-react';
+import { Quote, Heart, Star, ArrowRight, PenLine, CheckCircle2, MapPin, Calendar, Camera, Sparkles } from 'lucide-react';
 import getApiUrl from '../../config/api';
 
 const Testimonials = () => {
@@ -71,52 +71,114 @@ const Testimonials = () => {
             return (
               <motion.div
                 key={item._id || index}
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 25 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="bg-brand-black border border-brand-gold/15 p-8 flex flex-col justify-between hover:border-brand-gold/40 transition-all duration-500 relative group shadow-xl hover:shadow-[0_12px_40px_-8px_rgba(212,175,55,0.15)]"
+                whileHover={{ y: -6 }}
+                className="group relative flex flex-col justify-between rounded-lg bg-gradient-to-b from-[#161410]/95 via-[#0e0d0b]/95 to-[#080807]/95 border border-brand-gold/20 hover:border-brand-gold/60 p-7 sm:p-8 transition-all duration-500 shadow-2xl hover:shadow-[0_20px_50px_-10px_rgba(201,162,75,0.22)] overflow-hidden"
               >
+                {/* Top ambient gold glow */}
+                <div className="absolute top-0 right-0 w-40 h-40 bg-brand-gold/10 rounded-full blur-3xl pointer-events-none group-hover:bg-brand-gold/20 group-hover:scale-125 transition-all duration-700" />
+                <div className="absolute top-0 left-0 right-0 h-[1.5px] bg-gradient-to-r from-transparent via-brand-gold/50 to-transparent group-hover:via-brand-gold transition-all duration-700" />
+
+                {/* Luxury Corner Viewfinder Brackets */}
+                <span className="absolute top-2.5 left-2.5 w-2 h-2 border-t border-l border-brand-gold/40 pointer-events-none group-hover:border-brand-gold/80 transition-colors" />
+                <span className="absolute bottom-2.5 right-2.5 w-2 h-2 border-b border-r border-brand-gold/40 pointer-events-none group-hover:border-brand-gold/80 transition-colors" />
+
+                {/* Background decorative watermark quote mark */}
+                <span className="absolute top-4 right-6 font-serif text-7xl text-brand-gold/[0.07] group-hover:text-brand-gold/[0.16] select-none pointer-events-none transition-colors duration-500 font-bold leading-none">
+                  “
+                </span>
+
                 <div>
-                  {/* Rating Stars & Quote Icon */}
-                  <div className="flex justify-between items-center mb-6">
-                    <div className="flex items-center gap-1">
-                      {Array.from({ length: 5 }).map((_, sIdx) => (
-                        <Star
-                          key={sIdx}
-                          className={`w-3.5 h-3.5 ${
-                            sIdx < stars ? 'text-brand-gold fill-brand-gold' : 'text-brand-cream/20'
-                          }`}
-                        />
-                      ))}
+                  {/* Top Bar: Stars + Rating pill + Verified Badge */}
+                  <div className="flex items-center justify-between gap-3 mb-6 relative z-10">
+                    <div className="flex items-center gap-1.5 bg-brand-black/70 px-3 py-1.5 rounded-full border border-brand-gold/25 backdrop-blur-md">
+                      <div className="flex items-center gap-0.5">
+                        {Array.from({ length: 5 }).map((_, sIdx) => (
+                          <Star
+                            key={sIdx}
+                            className={`w-3.5 h-3.5 ${
+                              sIdx < stars
+                                ? 'text-amber-400 fill-amber-400 drop-shadow-[0_0_5px_rgba(245,158,11,0.65)]'
+                                : 'text-brand-cream/20'
+                            }`}
+                          />
+                        ))}
+                      </div>
+                      <span className="text-[10px] font-mono font-medium text-brand-gold ml-1">
+                        {stars.toFixed(1)}
+                      </span>
                     </div>
-                    <Quote className="w-8 h-8 text-brand-gold/20 group-hover:text-brand-gold/40 transition-colors" />
+
+                    <div className="inline-flex items-center gap-1.5 text-[9px] uppercase tracking-[0.25em] text-emerald-400/90 bg-emerald-950/40 border border-emerald-500/30 px-2.5 py-1 rounded-full backdrop-blur-sm">
+                      <CheckCircle2 className="w-2.5 h-2.5 text-emerald-400" />
+                      <span>Verified Story</span>
+                    </div>
                   </div>
 
-                  <p className="text-sm font-sans font-light text-brand-cream/80 italic leading-relaxed mb-8">
-                    "{item.message}"
-                  </p>
+                  {/* Review Body */}
+                  <div className="relative z-10 mb-8">
+                    <p className="font-serif text-[15px] sm:text-[16px] text-brand-cream/90 font-light italic leading-relaxed tracking-wide group-hover:text-brand-cream transition-colors duration-300 pl-3 border-l-2 border-brand-gold/30 group-hover:border-brand-gold/70">
+                      "{item.message}"
+                    </p>
+                  </div>
                 </div>
 
-                <div className="flex items-center gap-4 pt-6 border-t border-brand-gold/10">
-                  {item.photoUrl ? (
-                    <img
-                      src={item.photoUrl}
-                      alt={item.coupleNames}
-                      className="w-12 h-12 rounded-full object-cover border border-brand-gold/40 shrink-0"
-                    />
-                  ) : (
-                    <div className="w-12 h-12 rounded-full bg-brand-dark border border-brand-gold/30 flex items-center justify-center text-brand-gold font-serif text-sm font-light shrink-0">
-                      {item.coupleNames?.charAt(0) || 'C'}
+                {/* Reviewer Details (Author Section) */}
+                <div className="relative z-10 pt-5 border-t border-brand-gold/15 flex items-center justify-between gap-4 mt-auto">
+                  <div className="flex items-center gap-3.5 overflow-hidden">
+                    {item.photoUrl ? (
+                      <div className="relative shrink-0">
+                        <img
+                          src={item.photoUrl}
+                          alt={item.coupleNames}
+                          className="w-12 h-12 rounded-full object-cover ring-2 ring-brand-gold/50 ring-offset-2 ring-offset-[#0d0c0a] shadow-md group-hover:ring-brand-gold transition-all duration-300"
+                        />
+                        <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-brand-gold rounded-full border-2 border-[#0d0c0a] flex items-center justify-center">
+                          <Camera className="w-2 h-2 text-brand-black" />
+                        </span>
+                      </div>
+                    ) : (
+                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-brand-gold/30 via-brand-dark to-brand-black border border-brand-gold/50 flex items-center justify-center text-brand-gold font-serif text-base font-medium shrink-0 shadow-md">
+                        {item.coupleNames?.charAt(0) || 'C'}
+                      </div>
+                    )}
+
+                    <div className="overflow-hidden">
+                      <h4 className="text-base font-serif text-brand-cream font-light tracking-wide group-hover:text-brand-gold transition-colors duration-300 truncate">
+                        {item.coupleNames}
+                      </h4>
+                      <div className="flex items-center gap-2 text-[10px] text-brand-cream/60 font-light mt-0.5">
+                        {(item.location || item.weddingDate) ? (
+                          <>
+                            {item.location && (
+                              <span className="inline-flex items-center gap-1 text-brand-gold/80 uppercase tracking-widest truncate">
+                                <MapPin className="w-2.5 h-2.5 shrink-0 text-brand-gold" />
+                                {item.location}
+                              </span>
+                            )}
+                            {item.location && item.weddingDate && <span>•</span>}
+                            {item.weddingDate && (
+                              <span className="inline-flex items-center gap-1 text-brand-cream/50 tracking-wider truncate">
+                                <Calendar className="w-2.5 h-2.5 shrink-0 text-brand-gold/60" />
+                                {item.weddingDate}
+                              </span>
+                            )}
+                          </>
+                        ) : (
+                          <span className="text-brand-gold/70 uppercase tracking-widest text-[9px]">
+                            Wedding Client
+                          </span>
+                        )}
+                      </div>
                     </div>
-                  )}
-                  <div className="overflow-hidden">
-                    <h4 className="text-base font-serif text-brand-cream font-light truncate">
-                      {item.coupleNames}
-                    </h4>
-                    <span className="text-[10px] uppercase tracking-widest text-brand-gold block truncate">
-                      {item.location || item.weddingDate || 'Wedding Story'}
-                    </span>
+                  </div>
+
+                  {/* Subtle decorative sparkles icon */}
+                  <div className="shrink-0 w-8 h-8 rounded-full border border-brand-gold/20 bg-brand-gold/5 flex items-center justify-center text-brand-gold/60 group-hover:border-brand-gold/50 group-hover:text-brand-gold group-hover:scale-110 transition-all duration-300">
+                    <Sparkles className="w-3.5 h-3.5" />
                   </div>
                 </div>
               </motion.div>
